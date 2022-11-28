@@ -26,7 +26,7 @@ def carrier_placement(grid):
                 grid[carrier_start[0] - 3][carrier_start[1]],
                 grid[carrier_start[0] - 4][carrier_start[1]]]
                 if carrier_slots.count(None) == carrier_size:
-                    for i in range (5):
+                    for i in range (carrier_size):
                         grid[carrier_start[0] - i][carrier_start[1]] = 1
                     carrier_placed = True
         
@@ -38,7 +38,7 @@ def carrier_placement(grid):
                 grid[carrier_start[0] + 3][carrier_start[1]],
                 grid[carrier_start[0] + 4][carrier_start[1]]]
                 if carrier_slots.count(None) == carrier_size:
-                    for i in range (5):
+                    for i in range (carrier_size):
                         grid[carrier_start[0] + i][carrier_start[1]] = 1
                     carrier_placed = True
 
@@ -50,7 +50,7 @@ def carrier_placement(grid):
                 grid[carrier_start[0]][carrier_start[1] - 3],
                 grid[carrier_start[0]][carrier_start[1] - 4]]
                 if carrier_slots.count(None) == carrier_size:
-                    for i in range (5):
+                    for i in range (carrier_size):
                         grid[carrier_start[0]][carrier_start[1] - i] = 1
                     carrier_placed = True    
         elif direction == 3:
@@ -61,7 +61,7 @@ def carrier_placement(grid):
                 grid[carrier_start[0]][carrier_start[1] + 3],
                 grid[carrier_start[0]][carrier_start[1] + 4]]
                 if carrier_slots.count(None) == carrier_size:
-                    for i in range (5):
+                    for i in range (carrier_size):
                         grid[carrier_start[0]][carrier_start[1] + i] = 1
                     carrier_placed = True
         
@@ -75,9 +75,8 @@ def print_board(grid):
             if sqr == None:
                 grid_line += "| ░ |"
             else:
-                grid_line += f"| {sqr} |"
+                grid_line += f"| █ |"
         print(grid_line, "\n")
 
 start_board(grid_player, grid_size)
-carrier_placement(grid_player)
 print_board(grid_player)
