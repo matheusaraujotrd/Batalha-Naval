@@ -1,0 +1,15 @@
+# Ships:
+    - Carrier (5x)
+    - Battleship (4x)
+    - Cruiser (3x)
+    - Submarine (3x)
+    - Destroyer (2x)
+5x5: easy
+    - 
+
+
+# # # # #
+# # # # #
+# # # # #
+# # # # #
+# # # # #
