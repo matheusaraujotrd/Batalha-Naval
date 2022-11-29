@@ -7,16 +7,16 @@ def shipPlacement(grid, ship, gridSize):
     shipPosition = []
     if ship == "carrier":
         shipSize = 5
-        shipTag = 4
+        shipTag = "R"
     elif ship == "battleship":
         shipSize = 4
-        shipTag = 3
+        shipTag = "B"
     elif ship == "cruiser":
         shipSize = 3
-        shipTag = 2
+        shipTag = "C"
     elif ship == "destroyer":
         shipSize = 2
-        shipTag = 1
+        shipTag = "D"
 
     # direction == 0: up, 1: down, 2: left, 3: right
     direction = randint(0, 3)
