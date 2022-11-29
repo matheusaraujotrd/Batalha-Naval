@@ -60,9 +60,8 @@ def print_board(grid, grid_size):
 
 if __name__ == "__main__":
     start_board(grid_player, grid_size)
-    cpuModule.shipPlacement(grid_player, "destroyer", grid_size)
-    cpuModule.shipPlacement(grid_player, "destroyer", grid_size)
-    cpuModule.shipPlacement(grid_player, "battleship", grid_size)
-    cpuModule.shipPlacement(grid_player, "cruiser", grid_size)
-    cpuModule.shipPlacement(grid_player, "carrier", grid_size)
+    cpuModule.shipPlacement(grid_player, "battleship", grid_size, False)
+    cpuModule.shipPlacement(grid_player, "carrier", grid_size, False)
+    cpuModule.shipPlacement(grid_player, "cruiser", grid_size, False)
+    cpuModule.shipPlacement(grid_player, "destroyer", grid_size, False)
     print_board(grid_player, grid_size)
