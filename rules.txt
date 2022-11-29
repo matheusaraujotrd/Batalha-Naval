@@ -4,7 +4,9 @@
     - Cruiser (3x)
     - Submarine (3x)
     - Destroyer (2x)
-5x5: easy
+5x5: fast
+10x10: normal
+15x15: long
     - 
 
 
