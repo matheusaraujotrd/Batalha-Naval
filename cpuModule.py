@@ -1,5 +1,6 @@
 from random import randint
 
+# Main module for autoplacement
 def shipPlacement(grid, ship, gridSize):
     gridSize = gridSize
     grid = grid
@@ -27,6 +28,7 @@ def shipPlacement(grid, ship, gridSize):
         moveDirection, isValid = validDirection(grid, direction, shipSize, shipStart, gridSize)
     shipDeployment(grid, shipSize, shipTag, shipStart, moveDirection)
 
+# This function analyses grid availability in the desired direction without actually deploying units
 def validDirection(grid, direction, shipSize, shipStart, gridSize):
     shipPosition = []
     if direction == 0:
@@ -55,6 +57,7 @@ def validDirection(grid, direction, shipSize, shipStart, gridSize):
                     return [direction, True]
     return [direction, False]
 
+# This function deploy units after confirming there are enough empty slots
 def shipDeployment(grid, shipSize, shipTag, shipStart, moveDirection):
     if moveDirection == 0:
         for i in range(shipSize):
