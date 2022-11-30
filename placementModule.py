@@ -2,6 +2,7 @@ import time
 import os
 from random import randint
 from first_test import print_board
+from first_test import clearConsole
 
 # Main module for ship placement. 
 # Auto should be True for autoplacement and False for manual input.
@@ -106,6 +107,6 @@ def shipDeployment(grid, shipSize, shipTag, shipStart, moveDirection):
 def handlingInputException(grid, gridSize):
     print("Valores inválidos!")
     time.sleep(2)
-    os.system("cls")
+    clearConsole()
     print_board(grid, gridSize)
     return [0, False, ()]
