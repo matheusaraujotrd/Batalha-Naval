@@ -1,8 +1,10 @@
-from random import randint
 import time
+import os
+from random import randint
 from first_test import print_board
 
-# Main module for autoplacement
+# Main module for ship placement. 
+# Auto should be True for autoplacement and False for manual input.
 def shipPlacement(grid, ship, gridSize, auto):
     gridSize = gridSize
     grid = grid
@@ -28,15 +30,17 @@ def shipPlacement(grid, ship, gridSize, auto):
             shipStart = (randint(0, gridSize - 1), randint(0, gridSize - 1))
             moveDirection, isValid = validDirection(grid, direction, shipSize, shipStart, gridSize)
     else:
-        direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
-        while len(shipStart) < 1:
-            print("Valores inválidos!")
-            time.sleep(2)
-            print_board(grid, gridSize)
+        try:
             direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
+        except:
+            direction, isValid, shipStart = handlingInputException(grid, gridSize)
+        finally:
+            while len(shipStart) < 1:
+                direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
     shipDeployment(grid, shipSize, shipTag, shipStart, direction)
+    os.system("cls")
     print_board(grid, gridSize)
-    time.sleep(2)
+    time.sleep(1)
 
     # A specific function to receive player input during placement
 def manualInput(grid, shipSize, gridSize, ship):
@@ -50,9 +54,9 @@ def manualInput(grid, shipSize, gridSize, ship):
         if isValid == True:
             return [direction, isValid, (int(shipPosition[0][1]), shipLetter)]
         else:
-            return [direction, isValid, ()]
+            return handlingInputException(grid, gridSize)
     except:
-        return [direction, isValid, ()]
+        return handlingInputException(grid, gridSize)
 
 # This function analyses grid availability in the desired direction without actually deploying units
 def validDirection(grid, direction, shipSize, shipStart, gridSize):
@@ -97,3 +101,11 @@ def shipDeployment(grid, shipSize, shipTag, shipStart, moveDirection):
     elif moveDirection == 3:
         for i in range(shipSize):
             grid[shipStart[0]][shipStart[1] + i] = shipTag
+
+# A simple function to handle any input error while placing ships
+def handlingInputException(grid, gridSize):
+    print("Valores inválidos!")
+    time.sleep(2)
+    os.system("cls")
+    print_board(grid, gridSize)
+    return [0, False, ()]
