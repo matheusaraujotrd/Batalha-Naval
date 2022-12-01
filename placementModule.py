@@ -1,8 +1,7 @@
 import time
-import os
 from random import randint
-from first_test import print_board
-from first_test import clearConsole
+from boardModule import print_board
+from boardModule import clearConsole
 
 # Main module for ship placement. 
 # Auto should be True for autoplacement and False for manual input.
@@ -31,15 +30,11 @@ def shipPlacement(grid, ship, gridSize, auto):
             shipStart = (randint(0, gridSize - 1), randint(0, gridSize - 1))
             moveDirection, isValid = validDirection(grid, direction, shipSize, shipStart, gridSize)
     else:
-        try:
+        direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
+        while len(shipStart) < 1:
             direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
-        except:
-            direction, isValid, shipStart = handlingInputException(grid, gridSize)
-        finally:
-            while len(shipStart) < 1:
-                direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
     shipDeployment(grid, shipSize, shipTag, shipStart, direction)
-    os.system("cls")
+    clearConsole()
     print_board(grid, gridSize)
     time.sleep(1)
 
