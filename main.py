@@ -6,7 +6,6 @@ grid_player = []
 grid_size = 50
 
 if __name__ == "__main__":
-    print(chr(96 + grid_size))
     boardModule.start_board(grid_player, grid_size)
     boardModule.print_board(grid_player, grid_size)
     placementModule.shipPlacement(grid_player, "battleship", grid_size, False)
