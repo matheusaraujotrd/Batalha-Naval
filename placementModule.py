@@ -36,6 +36,7 @@ def shipPlacement(grid, ship, gridSize, auto):
     shipDeployment(grid, shipSize, shipTag, shipStart, direction)
     clearConsole()
     print_board(grid, gridSize)
+    if auto: print("\n\nCPU is placing its ships...")
     time.sleep(1)
 
     # A specific function to receive player input during placement
