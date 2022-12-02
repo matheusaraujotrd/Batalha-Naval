@@ -33,7 +33,11 @@ def print_board_open(grid, grid_size):
         linenum += 1
         for sqr in line:
             if sqr == None:
-                grid_line += f"| ░ |"
+                grid_line += f"|   |"
+            elif sqr == "M":
+                grid_line += f"| - |"
+            elif sqr == "H":
+                grid_line += f"| X |"
             else:
                 grid_line += f"| {sqr} |"
         print(linenum, grid_line, "\n")
