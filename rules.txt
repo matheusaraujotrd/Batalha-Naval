@@ -4,7 +4,20 @@
     - Cruiser (3x)
     - Submarine (3x)
     - Destroyer (2x)
-5x5: easy
+5x5: fast
+    1x Battleship
+    1x Cruiser
+    2x Destroyer
+10x10: normal
+    1x Carrier
+    1x Battleship
+    2x Cruiser
+    2x Destroyer
+15x15: long
+    1x Carrier
+    2x Battleship
+    3x Cruiser
+    3x destroyer
     - 
 
 
