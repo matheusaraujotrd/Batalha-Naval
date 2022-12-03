@@ -40,8 +40,8 @@ def getShipId(ship):
 
 #Simple functions to get a specific coordinate in user input
 #Both arguments must be STRING or CHAR type. 
-#e.g.: if user inputs D4 as coordinate, you may call getColumnCoordinates(input[0][0]) to reach column D
-#and getRowCoordinates(input[0][1]) to reach row 4
+#e.g.: if user inputs D4 as coordinate, you may call getColumnCoordinates(input[0]) to reach column D
+#and getRowCoordinates(input[1]) to reach row 4
 def getColumnCoordinates(letter):
     return ord(letter) - ord("a")
 def getRowCoordinates(number):
