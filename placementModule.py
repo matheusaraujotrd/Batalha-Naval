@@ -44,7 +44,7 @@ def doManualInput(grid, shipSize, ship):
     try:
         shipPosition = input("Type ship coordinates and ship direction"
                     f" E.g.: A0 2 or A0 3\n0 - Up || 1 - Down || 2 - Left || 3 - Right\n"
-                    f"Navio atual: {ship}\nTamanho: {shipSize}\n").lower().split()
+                    f"Current ship: {ship}\nSize: {shipSize}\n").lower().split()
         shipLetter = ord(shipPosition[0][0]) - ord("a")
         direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, (int(shipPosition[0][1]), shipLetter))
         if isValid == True:
