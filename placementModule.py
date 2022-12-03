@@ -54,10 +54,9 @@ def doManualInput(grid, shipSize, ship):
         shipPosition = input("Type ship coordinates and ship direction"
                     f" E.g.: A0 2 or A0 3\n0 - Up || 1 - Down || 2 - Left || 3 - Right\n"
                     f"Current ship: {ship}\nSize: {shipSize}\n").lower().split()
-        shipLetter = getColumnCoordinates(shipPosition[0][0])
-        direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, (getRowCoordinates(shipPosition[0][1]), shipLetter))
+        direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0])))
         if isValid == True:
-            return [direction, isValid, (int(shipPosition[0][1]), shipLetter)]
+            return [direction, isValid, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0]))]
         else:
             return handleInputException(grid)
     except:
@@ -67,7 +66,7 @@ def doManualInput(grid, shipSize, ship):
 def checkValidDirection(grid, direction, shipSize, shipStart):
     shipPosition = []
     if direction == 0:
-        if shipStart[0] - shipSize >= 0:
+        if shipStart[0] - (shipSize - 1) >= 0:
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0] - x][shipStart[1]])
             if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
@@ -79,13 +78,13 @@ def checkValidDirection(grid, direction, shipSize, shipStart):
             if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     elif direction == 2:
-        if shipStart[1] - shipSize >= 0:
+        if shipStart[1] - (shipSize - 1) >= 0:
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0]][shipStart[1] - x])
             if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     elif direction == 3:
-        if shipStart[1] + shipSize <= len(grid):
+        if shipStart[0] + shipSize <= len(grid):
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0]][shipStart[1] + x])
             if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
