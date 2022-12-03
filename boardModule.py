@@ -8,6 +8,7 @@ def start_board(grid, board_size: int):
         for i in range(board_size):
             line.append(None)
 
+# printing the board, but only showing the squares already shot
 def print_board(grid, grid_size):
     linenum = -1
     printTopCoordinates(grid_size)
@@ -15,11 +16,32 @@ def print_board(grid, grid_size):
         grid_line = ""
         linenum += 1
         for sqr in line:
+            if sqr == "M":
+                grid_line += "|   |"
+            elif sqr == "H":
+                grid_line += "| X |"
+            else:
+                grid_line += f"| ░ |"
+        print(grid_line, linenum, "\n")
+
+# for the player to place its pieces
+def print_board_open(grid, grid_size):
+    linenum = -1
+    printTopCoordinates(grid_size)
+    for line in grid:
+        grid_line = ""
+        linenum += 1
+        for sqr in line:
             if sqr == None or sqr == 0:
-                grid_line += "| ░ |"
+                grid_line += f"|   |"
+            elif sqr == "M":
+                grid_line += f"| - |"
+            elif sqr == "H":
+                grid_line += f"| X |"
             else:
                 grid_line += f"| {sqr} |"
         print(grid_line, linenum, "\n")
+
 # A simple function to clear the console.
 def clearConsole():
     os.system("cls")
