@@ -15,12 +15,11 @@ def print_board(grid, grid_size):
         grid_line = ""
         linenum += 1
         for sqr in line:
-            if sqr == None:
+            if sqr == None or sqr == 0:
                 grid_line += "| ░ |"
             else:
                 grid_line += f"| {sqr} |"
         print(grid_line, linenum, "\n")
-
 # A simple function to clear the console.
 def clearConsole():
     os.system("cls")
