@@ -22,7 +22,7 @@ def print_board(grid, grid_size):
                 grid_line += "| X |"
             else:
                 grid_line += f"| ░ |"
-        print(grid_line, linenum, "\n")
+        print(grid_line, "# ", linenum, "\n")
 
 # for the player to place its pieces
 def print_board_open(grid, grid_size):
@@ -40,7 +40,7 @@ def print_board_open(grid, grid_size):
                 grid_line += f"| X |"
             else:
                 grid_line += f"| {sqr} |"
-        print(grid_line, linenum, "\n")
+        print(grid_line, "# ", linenum, "\n")
 
 # A simple function to clear the console.
 def clearConsole():
@@ -56,4 +56,6 @@ def printTopCoordinates(gridSize):
     for character in rangeChar("A", chr(ord("@") + gridSize)):
         print(f"| {character} |", end="")
     print()
+    for character in rangeChar("A", chr(ord("@") + gridSize)):
+        print("  #  ", end="")
     print()
