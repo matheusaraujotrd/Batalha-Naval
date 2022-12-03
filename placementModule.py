@@ -64,7 +64,6 @@ def doManualInput(grid, shipSize, ship):
         return handleInputException(grid)
 
 # This function analyses grid availability in the desired direction without actually deploying units
-# The loops for shipAdjacent list are supposed to check for collision so no ship may be "glued" to each other
 def checkValidDirection(grid, direction, shipSize, shipStart):
     shipPosition = []
     if direction == 0:
