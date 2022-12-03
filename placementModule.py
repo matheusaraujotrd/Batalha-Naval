@@ -38,6 +38,15 @@ def getShipId(ship):
     elif ship == "destroyer":
         return [2, "D"]
 
+#Simple functions to get a specific coordinate in user input
+#Both arguments must be STRING or CHAR type. 
+#e.g.: if user inputs D4 as coordinate, you may call getColumnCoordinates(input[0][0]) to reach column D
+#and getRowCoordinates(input[0][1]) to reach row 4
+def getColumnCoordinates(letter):
+    return ord(letter) - ord("a")
+def getRowCoordinates(number):
+    return int(number)
+
 # A specific function to receive player input during placement
 def doManualInput(grid, shipSize, ship):
     isValid = False
