@@ -40,8 +40,8 @@ def getShipId(ship):
 
 #Simple functions to get a specific coordinate in user input
 #Both arguments must be STRING or CHAR type. 
-#e.g.: if user inputs D4 as coordinate, you may call getColumnCoordinates(input[0]) to reach column D
-#and getRowCoordinates(input[1]) to reach row 4
+#e.g.: if user inputs D4 as coordinate, you may call getColumnCoordinates(input[0]) 
+# to reach column D and getRowCoordinates(input[1]) to reach row 4
 def getColumnCoordinates(letter):
     return ord(letter) - ord("a")
 def getRowCoordinates(number):
@@ -54,7 +54,8 @@ def doManualInput(grid, shipSize, ship):
         shipPosition = input("Type ship coordinates and ship direction"
                     f" E.g.: A0 2 or A0 3\n0 - Up || 1 - Down || 2 - Left || 3 - Right\n"
                     f"Current ship: {ship}\nSize: {shipSize}\n").lower().split()
-        direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0])))
+        direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, 
+                            (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0])))
         if isValid == True:
             return [direction, isValid, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0]))]
         else:
