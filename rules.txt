@@ -4,9 +4,8 @@
     - Cruiser (3x)
     - Destroyer (2x)
 5x5: fast
-    1x Battleship
-    1x Cruiser
-    2x Destroyer
+    2x Cruiser
+    3x Destroyer
 10x10: normal
     1x Carrier
     1x Battleship

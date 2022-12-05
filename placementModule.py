@@ -138,5 +138,5 @@ def handleInputException(grid):
     print("Invalid values!")
     time.sleep(2)
     clearConsole()
-    print_board(grid, len(grid))
+    print_board_open(grid, len(grid))
     return [0, ()]
