@@ -1,6 +1,6 @@
 import time
 from random import randint
-from boardModule import print_board
+from boardModule import print_board, print_board_open
 from boardModule import clearConsole
 
 #direction variable is used several times in this file. 
@@ -19,8 +19,11 @@ def shipPlacement(grid, ship, auto):
             direction, shipStart = doManualInput(grid, shipSize, ship)
     deployShip(grid, shipSize, shipTag, shipStart, direction)
     clearConsole()
-    print_board(grid, len(grid))
-    if auto: print("\n\nCPU is placing its ships...")
+    if auto: 
+        print("\n\nCPU is placing its ships...")
+        print_board(grid, len(grid))
+    else:
+        print_board_open(grid, len(grid))
     time.sleep(1)
 
 #This function is used for autoplacement.
@@ -92,7 +95,7 @@ def checkValidDirection(grid, direction, shipSize, shipStart):
             if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     elif direction == 3:
-        if shipStart[0] + shipSize <= len(grid):
+        if shipStart[1] + shipSize <= len(grid):
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0]][shipStart[1] + x])
             if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
