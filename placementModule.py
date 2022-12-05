@@ -3,29 +3,36 @@ from random import randint
 from boardModule import print_board
 from boardModule import clearConsole
 
+#direction variable is used several times in this file. 
+## direction == 0: up, 1: down, 2: left, 3: right
+
 # Main module for ship placement. 
 # Auto should be True for autoplacement and False for manual input.
 def shipPlacement(grid, ship, auto):
     grid = grid
     shipSize, shipTag = getShipId(ship)
     if auto:
-        # direction == 0: up, 1: down, 2: left, 3: right
-        direction = randint(0, 3)
-        shipStart = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
-        moveDirection, isValid = checkValidDirection(grid, direction, shipSize, shipStart)
-        while isValid == False:
-            direction = randint(0, 3)
-            shipStart = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
-            moveDirection, isValid = checkValidDirection(grid, direction, shipSize, shipStart)
+        direction, shipStart = autoShipPlacement(grid, shipSize)
     else:
-        direction, isValid, shipStart = doManualInput(grid, shipSize, ship)
+        direction, shipStart = doManualInput(grid, shipSize, ship)
         while len(shipStart) < 1:
-            direction, isValid, shipStart = doManualInput(grid, shipSize, ship)
+            direction, shipStart = doManualInput(grid, shipSize, ship)
     deployShip(grid, shipSize, shipTag, shipStart, direction)
     clearConsole()
     print_board(grid, len(grid))
     if auto: print("\n\nCPU is placing its ships...")
     time.sleep(1)
+
+#This function is used for autoplacement.
+def autoShipPlacement(grid, shipSize):
+    direction = randint(0, 3)
+    shipStart = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
+    moveDirection, isValid = checkValidDirection(grid, direction, shipSize, shipStart)
+    while isValid == False:
+        direction = randint(0, 3)
+        shipStart = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
+        moveDirection, isValid = checkValidDirection(grid, direction, shipSize, shipStart)
+    return [direction, shipStart]
 
 #Simple function to identify ships being currently placed
 def getShipId(ship):
@@ -57,7 +64,7 @@ def doManualInput(grid, shipSize, ship):
         direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, 
                             (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0])))
         if isValid == True:
-            return [direction, isValid, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0]))]
+            return [direction, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0]))]
         else:
             return handleInputException(grid)
     except:
@@ -129,4 +136,4 @@ def handleInputException(grid):
     time.sleep(2)
     clearConsole()
     print_board(grid, len(grid))
-    return [0, False, ()]
+    return [0, ()]
