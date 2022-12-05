@@ -3,106 +3,137 @@ from random import randint
 from boardModule import print_board
 from boardModule import clearConsole
 
+#direction variable is used several times in this file. 
+## direction == 0: up, 1: down, 2: left, 3: right
+
 # Main module for ship placement. 
 # Auto should be True for autoplacement and False for manual input.
-def shipPlacement(grid, ship, gridSize, auto):
-    gridSize = gridSize
+def shipPlacement(grid, ship, auto):
     grid = grid
-    if ship == "carrier":
-        shipSize = 5
-        shipTag = "R"
-    elif ship == "battleship":
-        shipSize = 4
-        shipTag = "B"
-    elif ship == "cruiser":
-        shipSize = 3
-        shipTag = "C"
-    elif ship == "destroyer":
-        shipSize = 2
-        shipTag = "D"
+    shipSize, shipTag = getShipId(ship)
     if auto:
-        # direction == 0: up, 1: down, 2: left, 3: right
-        direction = randint(0, 3)
-        shipStart = (randint(0, gridSize - 1), randint(0, gridSize - 1))
-        moveDirection, isValid = validDirection(grid, direction, shipSize, shipStart, gridSize)
-        while isValid == False:
-            direction = randint(0, 3)
-            shipStart = (randint(0, gridSize - 1), randint(0, gridSize - 1))
-            moveDirection, isValid = validDirection(grid, direction, shipSize, shipStart, gridSize)
+        direction, shipStart = autoShipPlacement(grid, shipSize)
     else:
-        direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
+        direction, shipStart = doManualInput(grid, shipSize, ship)
         while len(shipStart) < 1:
-            direction, isValid, shipStart = manualInput(grid, shipSize, gridSize, ship)
-    shipDeployment(grid, shipSize, shipTag, shipStart, direction)
+            direction, shipStart = doManualInput(grid, shipSize, ship)
+    deployShip(grid, shipSize, shipTag, shipStart, direction)
     clearConsole()
-    print_board(grid, gridSize)
+    print_board(grid, len(grid))
     if auto: print("\n\nCPU is placing its ships...")
     time.sleep(1)
 
-    # A specific function to receive player input during placement
-def manualInput(grid, shipSize, gridSize, ship):
+#This function is used for autoplacement.
+def autoShipPlacement(grid, shipSize):
+    direction = randint(0, 3)
+    shipStart = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
+    moveDirection, isValid = checkValidDirection(grid, direction, shipSize, shipStart)
+    while isValid == False:
+        direction = randint(0, 3)
+        shipStart = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
+        moveDirection, isValid = checkValidDirection(grid, direction, shipSize, shipStart)
+    return [direction, shipStart]
+
+#Simple function to identify ships being currently placed
+def getShipId(ship):
+    if ship == "carrier":
+        return [5, "R"]
+    elif ship == "battleship":
+        return [4, "B"]
+    elif ship == "cruiser":
+        return [3, "C"]
+    elif ship == "destroyer":
+        return [2, "D"]
+
+#Simple functions to get a specific coordinate in user input
+#Both arguments must be STRING or CHAR type. 
+#e.g.: if user inputs D4 as coordinate, you may call getColumnCoordinates(input[0]) 
+# to reach column D and getRowCoordinates(input[1]) to reach row 4
+def getColumnCoordinates(letter):
+    return ord(letter) - ord("a")
+def getRowCoordinates(number):
+    return int(number)
+
+# A specific function to receive player input during placement
+def doManualInput(grid, shipSize, ship):
     isValid = False
     try:
-        shipPosition = input("Digite as coordenadas de início e direção do navio"
-                    f" Ex: A0 2 ou A0 3\n0 - Para cima || 1 - Para baixo || 2 - Para a esquerda || 3 - Para a direita\n"
-                    f"Navio atual: {ship}\nTamanho: {shipSize}\n").lower().split()
-        shipLetter = ord(shipPosition[0][0]) - ord("a")
-        direction, isValid = validDirection(grid, int(shipPosition[1][0]), shipSize, (int(shipPosition[0][1]), shipLetter), gridSize)
+        shipPosition = input("Type ship coordinates and ship direction"
+                    f" E.g.: A0 2 or A0 3\n0 - Up || 1 - Down || 2 - Left || 3 - Right\n"
+                    f"Current ship: {ship}\nSize: {shipSize}\n").lower().split()
+        direction, isValid = checkValidDirection(grid, int(shipPosition[1][0]), shipSize, 
+                            (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0])))
         if isValid == True:
-            return [direction, isValid, (int(shipPosition[0][1]), shipLetter)]
+            return [direction, (getRowCoordinates(shipPosition[0][1]), getColumnCoordinates(shipPosition[0][0]))]
         else:
-            return handlingInputException(grid, gridSize)
+            return handleInputException(grid)
     except:
-        return handlingInputException(grid, gridSize)
+        return handleInputException(grid)
 
 # This function analyses grid availability in the desired direction without actually deploying units
-def validDirection(grid, direction, shipSize, shipStart, gridSize):
+def checkValidDirection(grid, direction, shipSize, shipStart):
     shipPosition = []
     if direction == 0:
-        if shipStart[0] - shipSize >= 0:
+        if shipStart[0] - (shipSize - 1) >= 0:
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0] - x][shipStart[1]])
-            if shipPosition.count(None) == shipSize:
+            if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     elif direction == 1:
-        if shipStart[0] + shipSize <= gridSize:
+        if shipStart[0] + shipSize <= len(grid):
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0] + x][shipStart[1]])
-            if shipPosition.count(None) == shipSize:
+            if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     elif direction == 2:
-        if shipStart[1] - shipSize >= 0:
+        if shipStart[1] - (shipSize - 1) >= 0:
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0]][shipStart[1] - x])
-            if shipPosition.count(None) == shipSize:
+            if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     elif direction == 3:
-        if shipStart[1] + shipSize <= gridSize:
+        if shipStart[0] + shipSize <= len(grid):
             for x in range(shipSize):
                 shipPosition.append(grid[shipStart[0]][shipStart[1] + x])
-            if shipPosition.count(None) == shipSize:
+            if shipPosition.count(None) == shipSize and shipPosition.count(0) == 0:
                 return [direction, True]
     return [direction, False]
 
 # This function deploy units after confirming there are enough empty slots
-def shipDeployment(grid, shipSize, shipTag, shipStart, moveDirection):
+def deployShip(grid, shipSize, shipTag, shipStart, moveDirection):
     if moveDirection == 0:
         for i in range(shipSize):
             grid[shipStart[0] - i][shipStart[1]] = shipTag
+            createCollisionBlock(grid, shipStart[0] - i, shipStart[1])
     elif moveDirection == 1:
         for i in range(shipSize):
             grid[shipStart[0] + i][shipStart[1]] = shipTag
+            createCollisionBlock(grid, shipStart[0] + i, shipStart[1])
     elif moveDirection == 2:
         for i in range(shipSize):
             grid[shipStart[0]][shipStart[1] - i] = shipTag
+            createCollisionBlock(grid, shipStart[0], shipStart[1] - i)
     elif moveDirection == 3:
         for i in range(shipSize):
             grid[shipStart[0]][shipStart[1] + i] = shipTag
+            createCollisionBlock(grid, shipStart[0], shipStart[1] + i)
+    createCollisionBlock(grid, shipStart[0], shipStart[1])
+
+#This function will create a collision block around each ship block when possible
+def createCollisionBlock(grid, axisY, axisX):
+    if axisY + 1 < len(grid) and (grid[axisY + 1][axisX] == None or grid[axisY + 1][axisX] == 0):
+        grid[axisY + 1][axisX] = 0
+    if axisX + 1 < len(grid) and (grid[axisY][axisX + 1] == None or grid[axisY][axisX + 1] == 0):
+        grid[axisY][axisX + 1] = 0
+    if axisX - 1 >= 0 and (grid[axisY][axisX - 1] == None or grid[axisY][axisX - 1] == 0):
+        grid[axisY][axisX - 1] = 0
+    if axisY - 1 >= 0 and (grid[axisY - 1][axisX] == None or grid[axisY - 1][axisX] == 0):
+        grid[axisY - 1][axisX] = 0
 
 # A simple function to handle any input error while placing ships
-def handlingInputException(grid, gridSize):
-    print("Valores inválidos!")
+def handleInputException(grid):
+    print("Invalid values!")
     time.sleep(2)
     clearConsole()
-    print_board(grid, gridSize)
-    return [0, False, ()]
+    print_board(grid, len(grid))
+    return [0, ()]
