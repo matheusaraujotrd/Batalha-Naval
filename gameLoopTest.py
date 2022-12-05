@@ -14,32 +14,32 @@ def cpu_grid_start (game_difficulty: str):
     boardModule.print_board(grid_cpu, grid_size)       
     
     if game_difficulty == "easy":
-        placementModule.shipPlacement(grid_cpu, "battleship", True)
-        placementModule.shipPlacement(grid_cpu, "cruiser", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "battleship", True)
+        placementModule.ship_placement(grid_cpu, "cruiser", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
 
 
     elif game_difficulty == "normal":
-        placementModule.shipPlacement(grid_cpu, "carrier", True)
-        placementModule.shipPlacement(grid_cpu, "battleship", True)
-        placementModule.shipPlacement(grid_cpu, "cruiser", True)
-        placementModule.shipPlacement(grid_cpu, "cruiser", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "carrier", True)
+        placementModule.ship_placement(grid_cpu, "battleship", True)
+        placementModule.ship_placement(grid_cpu, "cruiser", True)
+        placementModule.ship_placement(grid_cpu, "cruiser", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
 
 
     elif game_difficulty == "hard":
-        placementModule.shipPlacement(grid_cpu, "carrier", True)
-        placementModule.shipPlacement(grid_cpu, "battleship", True)
-        placementModule.shipPlacement(grid_cpu, "cruiser", True)
-        placementModule.shipPlacement(grid_cpu, "cruiser", True)
-        placementModule.shipPlacement(grid_cpu, "cruiser", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
-        placementModule.shipPlacement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "carrier", True)
+        placementModule.ship_placement(grid_cpu, "battleship", True)
+        placementModule.ship_placement(grid_cpu, "cruiser", True)
+        placementModule.ship_placement(grid_cpu, "cruiser", True)
+        placementModule.ship_placement(grid_cpu, "cruiser", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
+        placementModule.ship_placement(grid_cpu, "destroyer", True)
 
 if __name__ == "__main__":
     cpu_grid_start("hard")
-    boardModule.clearConsole()
+    boardModule.clear_console()
     boardModule.print_board_open(grid_cpu, grid_size)
