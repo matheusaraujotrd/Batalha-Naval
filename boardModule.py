@@ -25,7 +25,7 @@ def print_board(grid, grid_size):
         print(grid_line, "# ", row_number, "\n")
 
 # for the player to place its pieces
-def print_board_open(grid, grid_size):
+def print_board_open(grid: list, grid_size: int):
     row_number = -1
     print_top_coordinates(grid_size)
     for line in grid:
