@@ -37,13 +37,13 @@ def auto_ship_placement(grid, ship_size):
 #Simple function to identify ships being currently placed
 def get_ship_id(ship):
     if ship == "carrier":
-        return [5, "R"]
+        return (5, "R")
     elif ship == "battleship":
-        return [4, "B"]
+        return (4, "B")
     elif ship == "cruiser":
-        return [3, "C"]
+        return (3, "C")
     elif ship == "destroyer":
-        return [2, "D"]
+        return (2, "D")
 
 #Simple functions to get a specific coordinate in user input
 #Both arguments must be STRING type. 
