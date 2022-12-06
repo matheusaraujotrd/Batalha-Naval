@@ -3,7 +3,7 @@ from random import randint
 from boardModule import print_board, print_board_open
 from boardModule import clear_console
 
-#direction variable is used several times in this file. 
+# direction variable is used several times in this file. 
 ## direction == 0: up, 1: down, 2: left, 3: right
 
 # Main module for ship placement. 
@@ -23,7 +23,7 @@ def ship_placement(grid, ship, auto):
     if auto: print("\n\nCPU is placing its ships...")
     time.sleep(1)
 
-#This function is used for autoplacement.
+# This function is used for autoplacement.
 def auto_ship_placement(grid, ship_size):
     direction = randint(0, 3)
     ship_start = (randint(0, len(grid) - 1), randint(0, len(grid) - 1))
@@ -34,7 +34,7 @@ def auto_ship_placement(grid, ship_size):
         move_direction, is_valid = check_valid_direction(grid, direction, ship_size, ship_start)
     return [direction, ship_start]
 
-#Simple function to identify ships being currently placed
+# Simple function to identify ships being currently placed
 def get_ship_id(ship):
     if ship == "carrier":
         return (5, "R")
@@ -45,6 +45,8 @@ def get_ship_id(ship):
     elif ship == "destroyer":
         return (2, "D")
 
+#Get ship shot id is used to return the name of the ship hit during the game. 
+#Get ship shot size may be used to get the size of a ship during a game.
 def get_ship_shot_id(ship_list):
     if ship_list == "R":
         return "Carrier"
@@ -64,9 +66,9 @@ def get_ship_shot_size(ship_list):
     elif ship_list == "Destroyer":
         return 2
 
-#Simple functions to get a specific coordinate in user input
-#Both arguments must be STRING type. 
-#e.g.: if user inputs D4 as coordinate, you may call get_column_coordinates(input) 
+# Simple functions to get a specific coordinate in user input
+# Both arguments must be STRING type. 
+# e.g.: if user inputs D4 as coordinate, you may call get_column_coordinates(input) 
 # to reach column D and get_row_coordinates(input) to reach row 4
 def get_column_coordinates(player_input):
     if len(player_input[0]) > 1 and len(player_input[0]) < 4:
@@ -77,6 +79,10 @@ def get_row_coordinates(player_input):
     elif len(player_input[0]) >= 3:
         return (int(player_input[0][1]) * 10) + int(player_input[0][2])
 
+
+# Get column/rows and get shot column/rows works almost the same, 
+# but the above code should be used for placement, 
+# while code below is for use during gameloop only.
 def get_column_shot_coordinates(player_input):
     if len(player_input) > 1 and len(player_input) < 4:
         return ord(player_input[0]) - ord("a")
@@ -151,7 +157,7 @@ def deploy_ship(grid, ship_size, ship_tag, ship_start, move_direction):
             create_collision_block(grid, ship_start[0], ship_start[1] + i)
     create_collision_block(grid, ship_start[0], ship_start[1])
 
-#This function will create a collision block around each ship block when possible
+# This function will create a collision block around each ship block when possible
 def create_collision_block(grid, axis_Y, axis_X):
     if axis_Y + 1 < len(grid) and (grid[axis_Y + 1][axis_X] == None or grid[axis_Y + 1][axis_X] == 0):
         grid[axis_Y + 1][axis_X] = 0
