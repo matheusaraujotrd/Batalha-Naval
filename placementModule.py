@@ -45,6 +45,25 @@ def get_ship_id(ship):
     elif ship == "destroyer":
         return (2, "D")
 
+def get_ship_shot_id(ship_list):
+    if ship_list == "R":
+        return "Carrier"
+    elif ship_list == "B":
+        return "Battleship"
+    elif ship_list == "C":
+        return "Cruiser"
+    elif ship_list == "D":
+        return "Destroyer"
+def get_ship_shot_size(ship_list):
+    if ship_list == "Carrier":
+        return 5
+    elif ship_list == "Battleship":
+        return 4
+    elif ship_list == "Cruiser":
+        return 3
+    elif ship_list == "Destroyer":
+        return 2
+
 #Simple functions to get a specific coordinate in user input
 #Both arguments must be STRING type. 
 #e.g.: if user inputs D4 as coordinate, you may call get_column_coordinates(input) 
@@ -52,13 +71,20 @@ def get_ship_id(ship):
 def get_column_coordinates(player_input):
     if len(player_input[0]) > 1 and len(player_input[0]) < 4:
         return ord(player_input[0][0]) - ord("a")
-    else:
-        return 51
 def get_row_coordinates(player_input):
     if len(player_input[0]) < 3:
         return int(player_input[0][1])
     elif len(player_input[0]) >= 3:
         return (int(player_input[0][1]) * 10) + int(player_input[0][2])
+
+def get_column_shot_coordinates(player_input):
+    if len(player_input) > 1 and len(player_input) < 4:
+        return ord(player_input[0]) - ord("a")
+def get_row_shot_coordinates(player_input):
+    if len(player_input) < 3:
+        return int(player_input[1])
+    elif len(player_input) >= 3:
+        return (int(player_input[1]) * 10) + int(player_input[2])
 
 # A specific function to receive player input during placement
 def do_manual_input(grid, ship_size, ship):
