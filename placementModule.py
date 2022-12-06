@@ -19,8 +19,11 @@ def ship_placement(grid, ship, auto):
             direction, ship_start = do_manual_input(grid, ship_size, ship)
     deploy_ship(grid, ship_size, ship_tag, ship_start, direction)
     clear_console()
-    print_board(grid, len(grid))
-    if auto: print("\n\nCPU is placing its ships...")
+    if auto: 
+        print("\n\nCPU is placing its ships...")
+        print_board(grid, len(grid))
+    else:
+        print_board_open(grid, len(grid))
     time.sleep(1)
 
 # This function is used for autoplacement.
