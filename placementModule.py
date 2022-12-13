@@ -38,7 +38,7 @@ def auto_ship_placement(grid, ship_size):
     return [direction, ship_start]
 
 # Simple function to identify ships being currently placed
-def get_ship_id(ship):
+def get_ship_id(ship: str):
     if ship == "carrier":
         return (5, "R")
     elif ship == "battleship":
