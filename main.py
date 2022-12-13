@@ -45,11 +45,11 @@ def grid_start (grid: list, difficulty: str, player: bool):
         placementModule.ship_placement(grid, "destroyer", player)
 
 def cpu_wins () -> bool:
-    if cpu_ships == 0: return True
+    if player_ships == 0: return True
     return False
 
 def player_wins () -> bool:
-    if player_ships == 0: return True
+    if cpu_ships == 0: return True
     return False
 
 def cpu_autoshot () -> tuple:
@@ -117,6 +117,7 @@ if __name__ == "__main__":
                 print("\n\nCPU's board:")
                 boardModule.print_board_open(grid_cpu, len(grid_cpu))
                 game_on = False
+                break
 
             else:
                 boardModule.clear_console()
@@ -125,7 +126,7 @@ if __name__ == "__main__":
                     if player_ships == 0 or cpu_ships == 0: break
 
                     try:
-                        boardModule.print_board(grid_cpu, len(grid_cpu)) # debug
+                        boardModule.print_board_open(grid_cpu, len(grid_cpu)) # debug
                         sleep(1.5)
                         player_shot = input("\nAim your shot at the opponent! e.g.: B2\n").upper()
                         player_aim = grid_cpu[int(player_shot[1:])][TOP_COORDINATES.index(player_shot[0])]
@@ -133,7 +134,7 @@ if __name__ == "__main__":
                             grid_cpu[int(player_shot[1:])][TOP_COORDINATES.index(player_shot[0])] = "M"
                             boardModule.clear_console()
                             print("Miss!\n")
-                            boardModule.print_board(grid_cpu, len(grid_cpu))
+                            boardModule.print_board_open(grid_cpu, len(grid_cpu))
                             sleep(1.5)
                             player_turn, cpu_turn = False, True
                             player_shooting = False
@@ -159,6 +160,7 @@ if __name__ == "__main__":
                 print("\n\nCPU's board:")
                 boardModule.print_board_open(grid_cpu, len(grid_cpu))
                 game_on = False 
+                cpu_turn = False
 
             else:
                 boardModule.clear_console()
