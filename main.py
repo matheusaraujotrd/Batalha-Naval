@@ -10,6 +10,7 @@ grid_size = 0
 
 DIFFICULTY = {"easy": 5, "normal": 10, "hard": 15}
 SHIPS = {"R": "Carrier", "B": "Battleship", "C": "Cruiser", "D": "Destroyer"}
+SHIP_SIZES = {"R": 5, "B": 4, "C": 3, "D": 2}
 TOP_COORDINATES = ("A", "B", "C", "D", "E", "F" ,"G", "H" ,"I", "J", "K", "L", "M", "N", "O")
 # grid initializer
 def grid_start (grid: list, difficulty: str, player: bool):
@@ -74,7 +75,7 @@ if __name__ == "__main__":
             boardModule.clear_console()
             if diff == 1: 
                 game_difficulty = "easy"
-                player_ships, cpu_ships = 10, 10
+                player_ships, cpu_ships = 9, 9
                 diff_valid = True
             elif diff == 2: 
                 game_difficulty = "normal"
@@ -107,9 +108,10 @@ if __name__ == "__main__":
     while game_on:
         
         if player_turn:
-            if player_wins():
+            player_winner = player_wins()
+            if player_winner:
                 boardModule.clear_console()
-                print("CPU wins! Better luck next time =(")
+                print("You win, congratulations! You're the Sea Master!")
                 print("\n\nYour board:")
                 boardModule.print_board_open(grid_player, len(grid_cpu))
                 print("\n\nCPU's board:")
@@ -131,13 +133,15 @@ if __name__ == "__main__":
                             grid_cpu[int(player_shot[1:])][TOP_COORDINATES.index(player_shot[0])] = "M"
                             boardModule.clear_console()
                             print("Miss!\n")
+                            boardModule.print_board(grid_cpu, len(grid_cpu))
+                            sleep(1.5)
                             player_turn, cpu_turn = False, True
                             player_shooting = False
                         elif player_aim in ("R", "B", "C", "D"):
                             boardModule.clear_console()
                             print(f"You've hit the enemy's {SHIPS[player_aim]}!\n")
                             cpu_ships -= 1
-                            grid_cpu[player_shot[1:]][TOP_COORDINATES.index(player_shot[0])] = "H"
+                            grid_cpu[int(player_shot[1:])][TOP_COORDINATES.index(player_shot[0].upper())] = "H"
                         elif player_aim in ("M", "H"):
                             boardModule.clear_console()
                             print("You've already shot here! Choose another coordinate!\n")
@@ -146,9 +150,10 @@ if __name__ == "__main__":
                         print("Enter a valid coordinate!\n")
         
         if cpu_turn:
-            if cpu_wins():
+            cpu_winner = cpu_wins()
+            if cpu_winner:
                 boardModule.clear_console()
-                print("You win, congratulations! You're the Sea Master!")
+                print("CPU wins! Better luck next time =(")
                 print("\n\nYour board:")
                 boardModule.print_board_open(grid_player, len(grid_cpu))
                 print("\n\nCPU's board:")
@@ -159,34 +164,37 @@ if __name__ == "__main__":
                 boardModule.clear_console()
                 print("CPU is going to make a shot...\n")
                 boardModule.print_board_open(grid_player, len(grid_player))
-                sleep(2.5)
+                sleep(1.5)
                 # random coord
 
-                if auto_attemps == 0:
-                    cpu_attempt = cpu_autoshot()
-                    cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
-                else:
-                    auto_attemps -= 1
-                    if cpu_lastshot(2) == 0:
-                        cpu_aim = grid_player[cpu_attempt[0] - 1][cpu_attempt[1]]
-                    elif cpu_lastshot(2) == 1:
-                        grid_player[cpu_attempt[0] + 1][cpu_attempt[1]]
-                    elif cpu_lastshot(2) == 2:
-                        grid_player[cpu_attempt[0]][cpu_attempt[1] - 1]
-                    elif cpu_lastshot(3) == 3:
-                        grid_player[cpu_attempt[0]][cpu_attempt[1] + 1]
+                cpu_attempt = cpu_autoshot()
+                cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
+                # else:
+                #     auto_attemps -= 1
+                #     if cpu_lastshot[2] == 0:
+                #         cpu_aim = grid_player[cpu_lastshot[0] - 1][cpu_lastshot[1]]
+                #     elif cpu_lastshot[2] == 1:
+                #         cpu_aim = grid_player[cpu_lastshot[0] + 1][cpu_lastshot[1]]
+                #     elif cpu_lastshot[2] == 2:
+                #         cpu_aim = grid_player[cpu_lastshot[0]][cpu_lastshot[1] - 1]
+                #     elif cpu_lastshot[2] == 3:
+                #         grid_player[cpu_lastshot[0]][cpu_lastshot[1] + 1]
 
                 if cpu_aim in ("R", "B", "D", "C"):
+                    grid_player[cpu_attempt[0]][cpu_attempt[1]] = "H"
                     cpu_lastshot = cpu_attempt
                     boardModule.clear_console()
                     print(f"CPU has hit your {SHIPS[cpu_aim]}!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
-                    ship_id = placementModule.get_ship_id(SHIPS[cpu_aim].upper())
-                    auto_attemps = ship_id[0] - 1
+                    sleep(1.5)
+                    ship_id = placementModule.get_ship_id(SHIPS[cpu_aim])
+                    auto_attemps = SHIP_SIZES[cpu_aim] - 1
                 elif cpu_aim in ("M", "H"):
-                    auto_attemps = 0
+                    pass
                 elif cpu_aim in (None, 0):
+                    grid_player[cpu_attempt[0]][cpu_attempt[1]] = "M"
                     boardModule.clear_console()
                     print(f"CPU has missed!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
+                    sleep(1.5)
                     player_turn, cpu_turn = True, False
