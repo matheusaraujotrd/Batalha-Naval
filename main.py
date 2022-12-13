@@ -160,8 +160,7 @@ if __name__ == "__main__":
                 print("\n\nCPU's board:")
                 boardModule.print_board_open(grid_cpu, len(grid_cpu))
                 game_on = False 
-                cpu_turn = False
-
+                break
             else:
                 boardModule.clear_console()
                 print("CPU is going to make a shot...\n")
