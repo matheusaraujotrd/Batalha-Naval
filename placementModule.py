@@ -48,8 +48,8 @@ def get_ship_id(ship: str):
     elif ship == "destroyer":
         return (2, "D")
 
-#Get ship shot id is used to return the name of the ship hit during the game. 
-#Get ship shot size may be used to get the size of a ship during a game.
+# Get ship shot id is used to return the name of the ship hit during the game. 
+# Get ship shot size may be used to get the size of a ship during a game.
 def get_ship_shot_id(ship_list):
     if ship_list == "R":
         return "Carrier"
@@ -60,40 +60,57 @@ def get_ship_shot_id(ship_list):
     elif ship_list == "D":
         return "Destroyer"
 def get_ship_shot_size(ship_list):
-    if ship_list == "Carrier":
+    if ship_list == "R":
         return 5
-    elif ship_list == "Battleship":
+    elif ship_list == "B":
         return 4
-    elif ship_list == "Cruiser":
+    elif ship_list == "C":
         return 3
-    elif ship_list == "Destroyer":
+    elif ship_list == "D":
         return 2
+    else:
+        return 0
 
 # Simple functions to get a specific coordinate in user input
 # Both arguments must be STRING type. 
 # e.g.: if user inputs D4 as coordinate, you may call get_column_coordinates(input) 
 # to reach column D and get_row_coordinates(input) to reach row 4
 def get_column_coordinates(player_input):
-    if len(player_input[0]) > 1 and len(player_input[0]) < 4:
-        return ord(player_input[0][0]) - ord("a")
+    try:
+        if len(player_input[0]) > 1 and len(player_input[0]) < 4:
+            coordinate = player_input[0][0].lower()
+            return ord(coordinate) - ord("a")
+    except ValueError:
+        return ord(z)
 def get_row_coordinates(player_input):
-    if len(player_input[0]) < 3:
-        return int(player_input[0][1])
-    elif len(player_input[0]) >= 3:
-        return (int(player_input[0][1]) * 10) + int(player_input[0][2])
+    try:
+        if len(player_input[0]) < 3:
+            return int(player_input[0][1])
+        elif len(player_input[0]) >= 3:
+            return (int(player_input[0][1]) * 10) + int(player_input[0][2])
+    except ValueError:
+        return 16
 
 
 # Get column/rows and get shot column/rows works almost the same, 
 # but the above code should be used for placement, 
 # while code below is for use during gameloop only.
 def get_column_shot_coordinates(player_input):
-    if len(player_input) > 1 and len(player_input) < 4:
-        return ord(player_input[0]) - ord("a")
+    try:
+        if len(player_input) > 1 and len(player_input) < 4:
+            coordinate = player_input[0].lower()
+            return ord(coordinate) - ord("a")
+    except ValueError:
+        return ord(z)
+
 def get_row_shot_coordinates(player_input):
-    if len(player_input) < 3:
-        return int(player_input[1])
-    elif len(player_input) >= 3:
-        return (int(player_input[1]) * 10) + int(player_input[2])
+    try:
+        if len(player_input) < 3:
+            return int(player_input[1])
+        elif len(player_input) >= 3:
+            return (int(player_input[1]) * 10) + int(player_input[2])
+    except ValueError:
+        return 16
 
 # A specific function to receive player input during placement
 def do_manual_input(grid, ship_size, ship):
@@ -101,7 +118,7 @@ def do_manual_input(grid, ship_size, ship):
     try:
         ship_position = input("Type ship coordinates and ship direction"
                     f" E.g.: A0 2 or A0 3\n0 - Up || 1 - Down || 2 - Left || 3 - Right\n"
-                    f"Current ship: {ship}\nSize: {ship_size}\n").lower().split()
+                    f"Current ship: {ship}\nSize: {ship_size}\n").split()
         direction, is_valid = check_valid_direction(grid, int(ship_position[1][0]), ship_size, 
                             (get_row_coordinates(ship_position), get_column_coordinates(ship_position)))
         if is_valid == True:
@@ -137,6 +154,35 @@ def check_valid_direction(grid, direction, ship_size, ship_start):
             for x in range(ship_size):
                 ship_position.append(grid[ship_start[0]][ship_start[1] + x])
             if ship_position.count(None) == ship_size and ship_position.count(0) == 0:
+                return [direction, True]
+    return [direction, False]
+
+    # Same as above function, but should be used for CPU purposes (so it doesn't get impossible to beat)
+def cpu_check_valid_direction(grid, direction, ship_size, ship_start):
+    ship_position = []
+    if direction == 0:
+        if ship_start[0] - (ship_size) >= 0:
+            for x in range(ship_size):
+                ship_position.append(grid[ship_start[0] - x][ship_start[1]])
+            if len(ship_position) == ship_size and ship_position.count("H") == 0 and ship_position.count("M") == 0:
+                return [direction, True]
+    elif direction == 1:
+        if ship_start[0] + ship_size <= len(grid):
+            for x in range(ship_size):
+                ship_position.append(grid[ship_start[0] + x][ship_start[1]])
+            if len(ship_position) == ship_size and ship_position.count("H") == 0 and ship_position.count("M") == 0:
+                return [direction, True]
+    elif direction == 2:
+        if ship_start[1] - (ship_size) >= 0:
+            for x in range(ship_size):
+                ship_position.append(grid[ship_start[0]][ship_start[1] - x])
+            if len(ship_position) == ship_size and ship_position.count("H") == 0 and ship_position.count("M") == 0:
+                return [direction, True]
+    elif direction == 3:
+        if ship_start[1] + ship_size <= len(grid):
+            for x in range(ship_size):
+                ship_position.append(grid[ship_start[0]][ship_start[1] + x])
+            if len(ship_position) == ship_size and ship_position.count("H") == 0 and ship_position.count("M") == 0:
                 return [direction, True]
     return [direction, False]
 

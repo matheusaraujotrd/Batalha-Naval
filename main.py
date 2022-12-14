@@ -11,7 +11,6 @@ grid_size = 0
 DIFFICULTY = {"easy": 5, "normal": 10, "hard": 15}
 SHIPS = {"R": "Carrier", "B": "Battleship", "C": "Cruiser", "D": "Destroyer"}
 SHIP_SIZES = {"R": 5, "B": 4, "C": 3, "D": 2}
-TOP_COORDINATES = ("A", "B", "C", "D", "E", "F" ,"G", "H" ,"I", "J", "K", "L", "M", "N", "O")
 # grid initializer
 def grid_start (grid: list, difficulty: str, player: bool):
     
@@ -64,14 +63,14 @@ if __name__ == "__main__":
 
     # CPU auto attempts (AI)
     auto_attempts = 0
-    cpu_lastshot = (0,0,0)
+    cpu_lastshot = [0,0,0]
 
     print("Sea Battle - Matheus Alexandre & Symon Bezerra")
     diff_valid = False
     game_difficulty = 0
     while not diff_valid:    
         try:
-            diff = int(input("Choose the game's difficulty:\n1 - Easy (5x5) | 2 - Normal (10x10) | 3 - Hard (15x15)"))
+            diff = int(input("Choose the game's difficulty:\n1 - Easy (5x5) | 2 - Normal (10x10) | 3 - Hard (15x15)\n"))
             boardModule.clear_console()
             if diff == 1: 
                 game_difficulty = "easy"
@@ -139,10 +138,11 @@ if __name__ == "__main__":
                             player_turn, cpu_turn = False, True
                             player_shooting = False
                         elif player_aim in ("R", "B", "C", "D"):
+                            ship_id = placementModule.get_ship_shot_id(player_aim)
                             boardModule.clear_console()
-                            print(f"You've hit the enemy's {SHIPS[player_aim]}!\n")
+                            print(f"You've hit the enemy's {ship_id}!\n")
                             cpu_ships -= 1
-                            grid_cpu[int(player_shot[1:])][TOP_COORDINATES.index(player_shot[0].upper())] = "H"
+                            grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)] = "H"
                         elif player_aim in ("M", "H"):
                             boardModule.clear_console()
                             print("You've already shot here! Choose another coordinate!\n")
@@ -182,14 +182,14 @@ if __name__ == "__main__":
                 #         grid_player[cpu_lastshot[0]][cpu_lastshot[1] + 1]
 
                 if cpu_aim in ("R", "B", "D", "C"):
+                    ship_id = placementModule.get_ship_shot_id(cpu_aim)
                     grid_player[cpu_attempt[0]][cpu_attempt[1]] = "H"
                     cpu_lastshot = cpu_attempt
                     boardModule.clear_console()
-                    print(f"CPU has hit your {SHIPS[cpu_aim]}!\n")
+                    print(f"CPU has hit your {ship_id}!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
                     sleep(1.5)
-                    ship_id = placementModule.get_ship_id(SHIPS[cpu_aim])
-                    auto_attemps = SHIP_SIZES[cpu_aim] - 1
+                    auto_attemps = placementModule.get_ship_shot_size(cpu_aim) - 1
                 elif cpu_aim in ("M", "H"):
                     pass
                 elif cpu_aim in (None, 0):
