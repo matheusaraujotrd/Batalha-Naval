@@ -25,3 +25,5 @@ if __name__ == "__main__":
     placementModule.ship_placement(grid_cpu, "destroyer", True)
     boardModule.clear_console()
     boardModule.print_board_open(grid_cpu, grid_size)
+    print(len(placementModule.ships_memory[0]))
+    print(placementModule.ships_memory[0])

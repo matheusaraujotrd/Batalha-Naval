@@ -135,13 +135,11 @@ if __name__ == "__main__":
                             print("Miss!\n")
                             boardModule.print_board_open(grid_cpu, len(grid_cpu))
                             sleep(1.5)
-                            placementModule.check_destroyed_ships(grid_cpu)
                             player_turn, cpu_turn = False, True
                             player_shooting = False
                         elif player_aim in ("R", "B", "C", "D"):
                             ship_id = placementModule.get_ship_id_by_tag(player_aim)
                             boardModule.clear_console()
-                            print(f"You've hit the enemy's {ship_id}!\n")
                             cpu_ships -= 1
                             grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)] = "H"
                             placementModule.check_destroyed_ships(grid_cpu)

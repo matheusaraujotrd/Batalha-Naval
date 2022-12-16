@@ -254,13 +254,16 @@ def create_collision_block(grid: list, axis_Y: int, axis_X: int):
         grid[axis_Y - 1][axis_X] = 0
 
 def check_destroyed_ships(grid: list):
-    for ship in range(len(ships_memory)):
+    for ship in range(len(ships_memory) - 1):
         acm = 0
         for cells in range(1, len(ships_memory[ship])):
             if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H":
                 acm += 1
         if acm == len(ships_memory[ship]) -1:
+            clear_console()
             print(f"You've destroyed a {ships_memory[ship][0]}")
+            print_board_open(grid, len(grid))
+            time.sleep(1)
             show_collision_blocks(grid, ships_memory, ship)
             remove_ship_from_memory(ships_memory, ship)
 
@@ -268,13 +271,25 @@ def show_collision_blocks(grid: list, ships_memory: list, number_index: int):
     for pos in range(1, len(ships_memory[number_index])):
         if ships_memory[number_index][pos][0] + 1 < len(grid) and grid[ships_memory[number_index][pos][0] + 1][ships_memory[number_index][pos][1]] == 0:
             grid[ships_memory[number_index][pos][0] + 1][ships_memory[number_index][pos][1]] = "M"
-        if ships_memory[number_index][pos][1] + 1 < len(grid) and grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] + 1] == 0:
+            time.sleep(0.5)
+            clear_console()
+            print_board_open(grid, len(grid))
+        if ships_memory[number_index][pos][1] + 1 < len(grid) - 1 and grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] + 1] == 0:
             grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] + 1] = "M"
+            time.sleep(0.5)
+            clear_console()
+            print_board_open(grid, len(grid))
         if ships_memory[number_index][pos][1] - 1 >= 0 and grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] - 1] == 0:
             grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] - 1] = "M"
+            time.sleep(0.5)
+            clear_console()
+            print_board_open(grid, len(grid))
         if ships_memory[number_index][pos][0] - 1 >= 0 and grid[ships_memory[number_index][pos][0] - 1][ships_memory[number_index][pos][1]] == 0:
             grid[ships_memory[number_index][pos][0] - 1][ships_memory[number_index][pos][1]] = "M"
-    print_board_open(grid, len(grid))
+            time.sleep(0.5)
+            clear_console()
+            print_board_open(grid, len(grid))
+    clear_console()
         
 
 def remove_ship_from_memory(ships_memory: list, number_index: int):
