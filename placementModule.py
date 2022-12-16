@@ -194,33 +194,33 @@ def check_valid_placement_direction(grid: list, direction: int, ship: str, ship_
     return [direction, False]
 
     # Same as above function, but should be used for CPU purposes (so it doesn't get impossible to beat)
-def cpu_check_valid_direction(grid: list, direction: int, ship_tag: str, ship_start: list) -> list:
+def cpu_check_valid_direction(grid: list, direction: int, ship_tag: str, ship_start: list) -> bool:
     ship_position = []
     if direction == 0:
         if ship_start[0] - (get_ship_size_by_tag(ship_tag)) >= 0:
             for x in range((get_ship_size_by_tag(ship_tag))):
                 ship_position.append(grid[ship_start[0] - x][ship_start[1]])
             if len(ship_position) == ((get_ship_size_by_tag(ship_tag))) and ship_position.count("H") == 0 and ship_position.count("M") == 0:
-                return [direction, True]
+                return True
     elif direction == 1:
         if ship_start[0] + (get_ship_size_by_tag(ship_tag)) <= len(grid):
             for x in range((get_ship_size_by_tag(ship_tag))):
                 ship_position.append(grid[ship_start[0] + x][ship_start[1]])
             if len(ship_position) == (get_ship_size_by_tag(ship_tag)) and ship_position.count("H") == 0 and ship_position.count("M") == 0:
-                return [direction, True]
+                return True
     elif direction == 2:
         if ship_start[1] - ((get_ship_size_by_tag(ship_tag))) >= 0:
             for x in range((get_ship_size_by_tag(ship_tag))):
                 ship_position.append(grid[ship_start[0]][ship_start[1] - x])
             if len(ship_position) == (get_ship_size_by_tag(ship_tag)) and ship_position.count("H") == 0 and ship_position.count("M") == 0:
-                return [direction, True]
+                return True
     elif direction == 3:
         if ship_start[1] + (get_ship_size_by_tag(ship_tag)) <= len(grid):
             for x in range((get_ship_size_by_tag(ship_tag))):
                 ship_position.append(grid[ship_start[0]][ship_start[1] + x])
             if len(ship_position) == (get_ship_size_by_tag(ship_tag)) and ship_position.count("H") == 0 and ship_position.count("M") == 0:
-                return [direction, True]
-    return [direction, False]
+                return True
+    return False
 
 # This function deploy units after confirming there are enough empty slots
 def deploy_ship(grid: list, ship: str, ship_start: list, move_direction: int):
