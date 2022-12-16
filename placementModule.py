@@ -245,23 +245,23 @@ def check_destroyed_ships(grid: list):
     for ship in range(len(ships_memory)):
         acm = 0
         for cells in range(1, len(ships_memory[ship]) - 1):
-            if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H":
-                ships_memory[ship].pop(cells)
-        if len(ships_memory[ship]) <= 1:
+            if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] != ["R", "B", "C", "D"]:
+                acm += 1
+        if acm == len(ships_memory[ship]) -1:
             show_collision_blocks(grid, ships_memory[ship])
             print(f"You've destroyed a {ships_memory[ship][0]}")
             del ships_memory[ship]
 
 def show_collision_blocks(grid: list, ships_coordinates: list):
     for pos in range(1, len(ships_coordinates) - 1):
-        if ships_coordinates[pos][1] + 1 < len(grid) and (grid[ships_coordinates[pos][1] + 1][ships_coordinates[pos][0]] == 0):
-            grid[ships_coordinates[pos][1] + 1][ships_coordinates[pos][0]] = "M"
-        if ships_coordinates[pos][0] + 1 < len(grid) and (grid[ships_coordinates[pos][1]][ships_coordinates[pos][0] + 1] == 0):
-            grid[ships_coordinates[pos][1]][ships_coordinates[pos][0] + 1] = "M"
-        if ships_coordinates[pos][0] - 1 >= 0 and (grid[ships_coordinates[pos][1]][ships_coordinates[pos][0] - 1]== 0):
-            grid[ships_coordinates[pos][1]][ships_coordinates[pos][0] - 1] = "M"
-        if ships_coordinates[pos][1] - 1 >= 0 and (grid[ships_coordinates[pos][1] - 1][ships_coordinates[pos][0]] == 0):
-            grid[ships_coordinates[pos][1] - 1][ships_coordinates[pos][0]] = "M"
+        if ships_coordinates[pos][0] + 1 < len(grid):
+            grid[ships_coordinates[pos][0] + 1][ships_coordinates[pos][0]] = "M"
+        if ships_coordinates[pos][1] + 1 < len(grid):
+            grid[ships_coordinates[pos][0]][ships_coordinates[pos][1] + 1] = "M"
+        if ships_coordinates[pos][1] - 1 >= 0:
+            grid[ships_coordinates[pos][0]][ships_coordinates[pos][1] - 1] = "M"
+        if ships_coordinates[pos][0] - 1 >= 0:
+            grid[ships_coordinates[pos][0] - 1][ships_coordinates[pos][1]] = "M"
 
 # A simple function to handle any input error while placing ships
 def handle_input_exception(grid: list) -> list:

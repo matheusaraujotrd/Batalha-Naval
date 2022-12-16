@@ -26,4 +26,4 @@ if __name__ == "__main__":
     boardModule.clear_console()
     boardModule.print_board_open(grid_cpu, grid_size)
     print(placementModule.ships_memory)
-    placementModule.check_destroyed_ships(grid_cpu)
+    print(grid_cpu[placementModule.ships_memory[0][1][0]][placementModule.ships_memory[0][1][1]])
