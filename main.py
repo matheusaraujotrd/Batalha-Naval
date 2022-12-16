@@ -138,7 +138,7 @@ if __name__ == "__main__":
                             player_turn, cpu_turn = False, True
                             player_shooting = False
                         elif player_aim in ("R", "B", "C", "D"):
-                            ship_id = placementModule.get_ship_shot_id(player_aim)
+                            ship_id = placementModule.get_ship_id_by_tag(player_aim)
                             boardModule.clear_console()
                             print(f"You've hit the enemy's {ship_id}!\n")
                             cpu_ships -= 1
@@ -182,14 +182,14 @@ if __name__ == "__main__":
                 #         grid_player[cpu_lastshot[0]][cpu_lastshot[1] + 1]
 
                 if cpu_aim in ("R", "B", "D", "C"):
-                    ship_id = placementModule.get_ship_shot_id(cpu_aim)
+                    ship_id = placementModule.get_ship_id_by_tag(cpu_aim)
                     grid_player[cpu_attempt[0]][cpu_attempt[1]] = "H"
                     cpu_lastshot = cpu_attempt
                     boardModule.clear_console()
                     print(f"CPU has hit your {ship_id}!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
                     sleep(1.5)
-                    auto_attemps = placementModule.get_ship_shot_size(cpu_aim) - 1
+                    auto_attemps = placementModule.get_ship_size(cpu_aim) - 1
                 elif cpu_aim in ("M", "H"):
                     pass
                 elif cpu_aim in (None, 0):
@@ -198,4 +198,5 @@ if __name__ == "__main__":
                     print(f"CPU has missed!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
                     sleep(1.5)
-                    player_turn, cpu_turn = True, False
+                placementModule.check_destroyed_ships(grid_player)
+                player_turn, cpu_turn = True, False
