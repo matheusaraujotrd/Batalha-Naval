@@ -186,13 +186,14 @@ if __name__ == "__main__":
                 else:
                     auto_attempts -= 1
                     if cpu_direction == 0:
-                        cpu_aim = grid_player[cpu_lastshot[0] - 1][cpu_lastshot[1]]
+                        cpu_attempt = [cpu_attempt[0] - 1, cpu_attempt[1]]
                     elif cpu_direction == 1:
-                        cpu_aim = grid_player[cpu_lastshot[0] + 1][cpu_lastshot[1]]
+                        cpu_attempt = [cpu_attempt[0] + 1, cpu_attempt[1]]
                     elif cpu_direction == 2:
-                        cpu_aim = grid_player[cpu_lastshot[0]][cpu_lastshot[1] - 1]
+                        cpu_attempt = [cpu_attempt[0], cpu_attempt[1] - 1]
                     elif cpu_direction == 3: 
-                        cpu_aim = grid_player[cpu_lastshot[0]][cpu_lastshot[1] + 1]
+                        cpu_attempt = [cpu_attempt[0], cpu_attempt[1] + 1]
+                    cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
 
                 if cpu_aim in ("R", "B", "D", "C"):
                     ship_id = placementModule.get_ship_id_by_tag(cpu_aim)
