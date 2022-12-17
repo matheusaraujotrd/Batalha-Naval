@@ -21,8 +21,8 @@ def grid_start (grid: list, difficulty: str, player: bool):
     if difficulty == "easy":
         placementModule.ship_placement(grid, "cruiser", player)
         placementModule.ship_placement(grid, "destroyer", player)
-        placementModule.ship_placement(grid, "battleship", player)
-
+        placementModule.ship_placement(grid, "destroyer", player)
+        placementModule.ship_placement(grid, "destroyer", player)
 
     elif difficulty == "normal":
         placementModule.ship_placement(grid, "carrier", player)
@@ -35,6 +35,7 @@ def grid_start (grid: list, difficulty: str, player: bool):
 
     elif difficulty == "hard":
         placementModule.ship_placement(grid, "carrier", player)
+        placementModule.ship_placement(grid, "battleship", player)
         placementModule.ship_placement(grid, "battleship", player)
         placementModule.ship_placement(grid, "cruiser", player)
         placementModule.ship_placement(grid, "cruiser", player)
@@ -95,7 +96,7 @@ if __name__ == "__main__":
                 diff_valid = True
             elif diff == 3: 
                 game_difficulty = "hard"
-                player_ships, cpu_ships = 28, 28
+                player_ships, cpu_ships = 24, 24
                 diff_valid = True
             else:
                 boardModule.clear_console()
@@ -180,18 +181,22 @@ if __name__ == "__main__":
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
                 # random coord
-                if auto_attempts == 0:
+                if auto_attempts == 0 and placementModule.cpu_unfinished_business(grid_player) == None:
                     cpu_attempt = cpu_autoshot()
+                    cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
+                elif auto_attempts == 0 and placementModule.cpu_unfinished_business(grid_player) != None:
+                    cpu_lastshot = cpu_attempt
+                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player)
                     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
                 else:
                     auto_attempts -= 1
-                    if cpu_direction == 0:
+                    if cpu_direction == 0 and cpu_attempt[0] - 1 >= 0:
                         cpu_attempt = [cpu_attempt[0] - 1, cpu_attempt[1]]
-                    elif cpu_direction == 1:
+                    elif cpu_direction == 1 and cpu_attempt[0] + 1 < len(grid_player):
                         cpu_attempt = [cpu_attempt[0] + 1, cpu_attempt[1]]
-                    elif cpu_direction == 2:
+                    elif cpu_direction == 2 and cpu_attempt[1] - 1 >= 0:
                         cpu_attempt = [cpu_attempt[0], cpu_attempt[1] - 1]
-                    elif cpu_direction == 3: 
+                    elif cpu_direction == 3 and cpu_attempt[1] + 1 < len(grid_player): 
                         cpu_attempt = [cpu_attempt[0], cpu_attempt[1] + 1]
                     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
 
