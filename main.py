@@ -181,12 +181,8 @@ if __name__ == "__main__":
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
                 # random coord
-                if auto_attempts == 0 and placementModule.cpu_unfinished_business(grid_player) == None:
+                if auto_attempts == 0:
                     cpu_attempt = cpu_autoshot()
-                    cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
-                elif auto_attempts == 0 and placementModule.cpu_unfinished_business(grid_player) != None:
-                    cpu_lastshot = cpu_attempt
-                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player)
                     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
                 else:
                     auto_attempts -= 1
