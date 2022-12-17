@@ -53,13 +53,13 @@ def get_ship_size_by_tag(ship_tag: str) -> int:
         return 0
 
 def get_ship_id_by_size(ship_size: int) -> str:
-    if ship_list == 5:
+    if ship_size == 5:
         return "Carrier"
-    elif ship_list == 4:
+    elif ship_size == 4:
         return "Battleship"
-    elif ship_list == 3:
+    elif ship_size == 3:
         return "Cruiser"
-    elif ship_list == 2:
+    elif ship_size == 2:
         return "Destroyer"
     else:
         return ""
@@ -107,7 +107,7 @@ def get_column_coordinates(player_input: str) -> int:
             coordinate = player_input[0][0].lower()
             return ord(coordinate) - ord("a")
     except ValueError:
-        return ord(z)
+        return ord("z")
 def get_row_coordinates(player_input: str) -> int:
     try:
         if len(player_input[0]) < 3:
@@ -127,7 +127,7 @@ def get_column_shot_coordinates(player_input: str) -> int:
             coordinate = player_input[0].lower()
             return ord(coordinate) - ord("a")
     except ValueError:
-        return ord(z)
+        return ord("z")
 
 def get_row_shot_coordinates(player_input: str) -> int:
     try:

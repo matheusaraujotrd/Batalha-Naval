@@ -43,6 +43,8 @@ def grid_start (grid: list, difficulty: str, player: bool):
         placementModule.ship_placement(grid, "destroyer", player)
         placementModule.ship_placement(grid, "destroyer", player)
 
+
+# game loop conditions
 def cpu_wins () -> bool:
     if player_ships == 0: return True
     return False
@@ -51,10 +53,20 @@ def player_wins () -> bool:
     if cpu_ships == 0: return True
     return False
 
-def cpu_autoshot () -> tuple:
-    return (randint(0, grid_size - 1), randint(0, grid_size - 1), randint(0,3))
-    # row, column, direction
+# cpu random shot
+def cpu_autoshot () -> list:
+    return [randint(0, grid_size - 1), randint(0, grid_size - 1)]
 
+# if the CPU hits a ship, this will say the direction it must go
+def cpu_smartshot (lastshot: list, ship: str) -> int:
+    valid_shot = False
+    while not valid_shot:
+        direction = randint(0,3)
+        cpu_shot = placementModule.cpu_check_valid_direction(grid_player, direction, ship, lastshot)
+        if cpu_shot: valid_shot = True
+    
+    return direction
+    
 if __name__ == "__main__":
 
     # player & cpu lives
@@ -63,7 +75,8 @@ if __name__ == "__main__":
 
     # CPU auto attempts (AI)
     auto_attempts = 0
-    cpu_lastshot = [0,0,0]
+    cpu_lastshot = [0,0]
+    cpu_direction = 0
 
     print("Sea Battle - Matheus Alexandre & Symon Bezerra")
     diff_valid = False
@@ -167,32 +180,35 @@ if __name__ == "__main__":
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
                 # random coord
-
-                cpu_attempt = cpu_autoshot()
-                cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
-                # else:
-                #     auto_attemps -= 1
-                #     if cpu_lastshot[2] == 0:
-                #         cpu_aim = grid_player[cpu_lastshot[0] - 1][cpu_lastshot[1]]
-                #     elif cpu_lastshot[2] == 1:
-                #         cpu_aim = grid_player[cpu_lastshot[0] + 1][cpu_lastshot[1]]
-                #     elif cpu_lastshot[2] == 2:
-                #         cpu_aim = grid_player[cpu_lastshot[0]][cpu_lastshot[1] - 1]
-                #     elif cpu_lastshot[2] == 3:
-                #         grid_player[cpu_lastshot[0]][cpu_lastshot[1] + 1]
+                if auto_attempts == 0:
+                    cpu_attempt = cpu_autoshot()
+                    cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
+                else:
+                    auto_attempts -= 1
+                    if cpu_direction == 0:
+                        cpu_aim = grid_player[cpu_lastshot[0] - 1][cpu_lastshot[1]]
+                    elif cpu_direction == 1:
+                        cpu_aim = grid_player[cpu_lastshot[0] + 1][cpu_lastshot[1]]
+                    elif cpu_direction == 2:
+                        cpu_aim = grid_player[cpu_lastshot[0]][cpu_lastshot[1] - 1]
+                    elif cpu_direction == 3: 
+                        cpu_aim = grid_player[cpu_lastshot[0]][cpu_lastshot[1] + 1]
 
                 if cpu_aim in ("R", "B", "D", "C"):
                     ship_id = placementModule.get_ship_id_by_tag(cpu_aim)
                     grid_player[cpu_attempt[0]][cpu_attempt[1]] = "H"
                     cpu_lastshot = cpu_attempt
+                    if auto_attempts == 0:
+                        cpu_direction = randint(0,3)
                     boardModule.clear_console()
                     print(f"CPU has hit your {ship_id}!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
                     sleep(1.5)
-                    auto_attemps = placementModule.get_ship_size(cpu_aim) - 1
+                    auto_attempts = placementModule.get_ship_size(cpu_aim) - 1
                 elif cpu_aim in ("M", "H"):
-                    pass
+                    pass # no need, since the smart shots will already cover to not hit M's or H's
                 elif cpu_aim in (None, 0):
+                    auto_attempts = 0
                     grid_player[cpu_attempt[0]][cpu_attempt[1]] = "M"
                     boardModule.clear_console()
                     print(f"CPU has missed!\n")
