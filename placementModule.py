@@ -147,7 +147,7 @@ def do_manual_input(grid: list, ship: str) -> list:
 def check_valid_placement_direction(grid: list, direction: int, ship: str, ship_start: list) -> list:
     ship_position = []
     ships_temporary_coordinates = []
-    ships_temporary_coordinates.append(ship)
+    # ships_temporary_coordinates.append(ship)
     if direction == 0:
         if ship_start[0] - (get_ship_size(ship) - 1) >= 0:
             for x in range(get_ship_size(ship)):
@@ -187,7 +187,7 @@ def cpu_check_valid_direction(grid: list, ship_tag: str, ship_start: list) -> li
     ship_directions = []
     for x in range(4):
         current_direction = []
-        for y in range(get_ship_size_by_tag(ship_tag)):
+        for y in range(get_ship_size(ship_tag)):
             if x == 0:
                 current_direction.append(grid[ship_start[0] - 1][ship_start[1]])
             elif x == 1:
@@ -254,21 +254,34 @@ def check_destroyed_ships(grid: list):
             show_collision_blocks(grid, ships_memory, ship)
             remove_ship_from_memory(ships_memory, ship)
 
-def cpu_unfinished_business(grid: list) -> tuple:
-    for ship in range(len(ships_memory)):
-        for cells in range(1, len(ships_memory[ship])):
-            if cells == len(ships_memory[ship]) - 1:
-                if grid[ships_memory[ship][cells - 1][0]][ships_memory[ship][cells - 1][1]] == "H" and grid[ships_memory[ship][cells - 1][0]][ships_memory[ship][cells - 1][1]] != "H":
-                    return (ships_memory[ship][cells][0], ships_memory[ship][cells][1])
-                else:
-                    return None
-            else:
-                if cells > 1:
-                    if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H" and grid[ships_memory[ship][cells - 1][0]][ships_memory[ship][cells - 1][1]] not in ["H", "M"]:
-                        return (ships_memory[ship][cells -1][0], ships_memory[ship][cells - 1][1])
-                if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H" and grid[ships_memory[ship][cells + 1][0]][ships_memory[ship][cells + 1][1]] not in ["H", "M"]:
-                        return (ships_memory[ship][cells + 1][0], ships_memory[ship][cells + 1][1])
+def cpu_unfinished_business(grid: list, last_hit: str) -> tuple:
+    # for ship in range(len(ships_memory)):
+    #     for cells in range(1, len(ships_memory[ship])):
+    #         if cells == len(ships_memory[ship]) - 1:
+    #             if grid[ships_memory[ship][cells - 1][0]][ships_memory[ship][cells - 1][1]] == "H" and grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] != "H":
+    #                 return (ships_memory[ship][cells][0], ships_memory[ship][cells][1])
+    #             else:
+    #                 return None
+    #         else:
+    #             if cells > 1:
+    #                 if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H" and grid[ships_memory[ship][cells - 1][0]][ships_memory[ship][cells - 1][1]] != "H":
+    #                     return (ships_memory[ship][cells - 1][0], ships_memory[ship][cells - 1][1])
+    #             if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H" and grid[ships_memory[ship][cells + 1][0]][ships_memory[ship][cells + 1][1]] != "H":
+    #                     return (ships_memory[ship][cells + 1][0], ships_memory[ship][cells + 1][1])
+    # return None
+    for ship in ships_memory:
+        ship_tags = []
+        ship_coordinates = []
+        for cell in ship:
+            ship_tags.append(grid[cell[0]][cell[1]])
+            ship_coordinates.append(cell)
+        if ship_tags.count("H") != len(ship) and ship_tags.count("H") > 0:
+            return ship_coordinates[ship_tags.index(last_hit)]
+        elif ship_tags.count("H") == len(ship):
+            return None
+    
     return None
+
 
 def show_collision_blocks(grid: list, ships_memory: list, number_index: int) -> None:
     for pos in range(1, len(ships_memory[number_index])):
