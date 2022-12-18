@@ -95,6 +95,8 @@ def cpu_adjacentshot (lastshot: tuple, direction: int) -> tuple:
         coordinates = (lastshot[0], lastshot[1] - 1)
     elif direction == 3 and lastshot[1] + 1 < DIFFICULTY[game_difficulty]:
         coordinates = (lastshot[0], lastshot[1] + 1)
+    else: 
+        coordinates = cpu_randomshot()
     
     return coordinates
 
@@ -223,8 +225,10 @@ if __name__ == "__main__":
                 else:
                     cpu_smart_attempt = cpu_smartshot(grid_player, cpu_lastaims[len(cpu_lastaims) - 1], cpu_adjacent, cpu_direction)
                     if not cpu_smart_attempt[0]:
-                        cpu_aim = cpu_randomshot
-                    else: cpu_aim = cpu_smart_attempt[1]
+                        cpu_aim = cpu_randomshot()
+                    else: 
+                        cpu_aim = cpu_smart_attempt[1]
+                        cpu_direction = cpu_smart_attempt[2]
                 cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
 
 
