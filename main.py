@@ -59,14 +59,26 @@ def cpu_randomshot () -> list:
     return [randint(0, grid_size - 1), randint(0, grid_size - 1)]
 
 # if the CPU hits a ship, this will say the direction it must go
-def cpu_smartshot_direction (lastshot: list, ship: str) -> int:
+def cpu_smartshot (grid: list, lastshot: tuple, ship: str) -> tuple:
     valid_shot = False
     while not valid_shot:
-        direction = randint(0,3)
-        cpu_shot = placementModule.cpu_check_valid_direction(grid_player, direction, ship, lastshot)
-        if cpu_shot: valid_shot = True
-    
-    return direction
+        try:
+            for direction in range(4): # 0 - 3
+                if direction == 0:
+                    cpu_shot = (lastshot[0] - 1, lastshot[1])
+                elif direction == 1:
+                    cpu_shot = (lastshot[0] + 1, lastshot[1])
+                elif direction == 2:
+                    cpu_shot = (lastshot[0], lastshot[1] - 1)
+                elif direction == 3:
+                    cpu_shot = (lastshot[0], lastshot[1] + 1)
+                cpu_aim = grid[cpu_shot[0]][cpu_shot[1]]
+                # cpu_shot = coordinates(tuple); cpu_aim = ship tag(string)
+                if cpu_aim not in ("M", "H"):
+                    return (True, cpu_shot)
+        except IndexError:
+            pass
+    return (False, (-1, -1))
     
 if __name__ == "__main__":
 
@@ -76,6 +88,7 @@ if __name__ == "__main__":
 
     # CPU auto attempts (AI)
     cpu_lasthits = []
+    cpu_lastaims = []
     # cpu_direction = 0
 
     print("Sea Battle - Matheus Alexandre & Symon Bezerra")
@@ -180,34 +193,24 @@ if __name__ == "__main__":
                 print("CPU is going to make a shot...\n")
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
-                # random coord
-                # if auto_attempts == 0:
-                #     cpu_attempt = cpu_autoshot()
-                #     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
-                # else:
-                #     auto_attempts -= 1
-                #     if cpu_direction == 0 and cpu_attempt[0] - 1 >= 0:
-                #         cpu_attempt = [cpu_attempt[0] - 1, cpu_attempt[1]]
-                #     elif cpu_direction == 1 and cpu_attempt[0] + 1 < len(grid_player):
-                #         cpu_attempt = [cpu_attempt[0] + 1, cpu_attempt[1]]
-                #     elif cpu_direction == 2 and cpu_attempt[1] - 1 >= 0:
-                #         cpu_attempt = [cpu_attempt[0], cpu_attempt[1] - 1]
-                #     elif cpu_direction == 3 and cpu_attempt[1] + 1 < len(grid_player): 
-                #             cpu_attempt = [cpu_attempt[0], cpu_attempt[1] + 1]
-                #     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
+
                 if len(cpu_lasthits) == 0:
-                    cpu_attempt = None
+                    cpu_attempt = False
                 else:
                     cpu_attempt = placementModule.cpu_unfinished_business(grid_player, cpu_lasthits[len(cpu_lasthits) - 1])
-                if cpu_attempt == None:
+                if not cpu_attempt:
                     cpu_aim = cpu_randomshot()
                 else:
-                    cpu_aim = cpu_attempt
+                    cpu_smart_attempt = cpu_smartshot(grid_player, cpu_lasthits[len(cpu_lasthits) - 1], cpu_lastaims[len(cpu_lastaims) - 1])
+                    if not cpu_smart_attempt[0]:
+                        cpu_aim = cpu_randomshot
+                    else: cpu_aim = cpu_smart_attempt[1]
                 cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
 
                 if cpu_shot in ("R", "B", "D", "C"):
                     ship_id = placementModule.get_ship_id_by_tag(cpu_shot)
-                    cpu_lasthits.append(cpu_shot)
+                    cpu_lasthits.append(cpu_aim)
+                    cpu_lastaims.append(cpu_shot)
                     player_ships -= 1
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "H"
                     boardModule.clear_console()
