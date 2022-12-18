@@ -1,6 +1,6 @@
 import boardModule
 import placementModule
-from random import randint
+from random import randint, shuffle
 from time import sleep
 
 # global variables
@@ -55,30 +55,49 @@ def player_wins () -> bool:
     return False
 
 # cpu random shot
-def cpu_randomshot () -> list:
-    return [randint(0, grid_size - 1), randint(0, grid_size - 1)]
+def cpu_randomshot () -> tuple:
+    return (randint(0, grid_size - 1), randint(0, grid_size - 1))
 
 # if the CPU hits a ship, this will say the direction it must go
-def cpu_smartshot (grid: list, lastshot: tuple, ship: str) -> tuple:
-    valid_shot = False
-    while not valid_shot:
+def cpu_smartshot (grid: list, lastshot: tuple, adjacent: bool, direction: int) -> tuple:
+    if adjacent:
+        try: 
+            cpu_shot = cpu_adjacentshot(lastshot, direction)
+            cpu_aim = grid[cpu_shot[0]][cpu_shot[1]]
+            if cpu_aim not in ("M", "H"):
+                return (True, cpu_shot, direction)
+            else:
+                return (False, (-1,-1), -1)
+        except IndexError:
+            cpu_shot = cpu_randomshot()
+            return (False, cpu_shot, -1)
+
+    else:
         try:
-            for direction in range(4): # 0 - 3
-                if direction == 0:
-                    cpu_shot = (lastshot[0] - 1, lastshot[1])
-                elif direction == 1:
-                    cpu_shot = (lastshot[0] + 1, lastshot[1])
-                elif direction == 2:
-                    cpu_shot = (lastshot[0], lastshot[1] - 1)
-                elif direction == 3:
-                    cpu_shot = (lastshot[0], lastshot[1] + 1)
+            directions = [0, 1, 2, 3] # 0 - 3
+            shuffle(directions) # so it will not always check the same
+            for direction in directions: 
+                cpu_shot = cpu_adjacentshot(lastshot, direction)
                 cpu_aim = grid[cpu_shot[0]][cpu_shot[1]]
                 # cpu_shot = coordinates(tuple); cpu_aim = ship tag(string)
                 if cpu_aim not in ("M", "H"):
-                    return (True, cpu_shot)
+                    return (True, cpu_shot, direction)
         except IndexError:
             pass
-    return (False, (-1, -1))
+        return (False, (-1, -1), -1)
+
+def cpu_adjacentshot (lastshot: tuple, direction: int) -> tuple:
+    if direction == 0 and lastshot[0] - 1 > 0:
+        coordinates = (lastshot[0] - 1, lastshot[1])
+    elif direction == 1 and lastshot[0] + 1 < DIFFICULTY[game_difficulty]:
+        coordinates = (lastshot[0] + 1, lastshot[1])
+    elif direction == 2 and lastshot[1] - 1 > 0:
+        coordinates = (lastshot[0], lastshot[1] - 1)
+    elif direction == 3 and lastshot[1] + 1 < DIFFICULTY[game_difficulty]:
+        coordinates = (lastshot[0], lastshot[1] + 1)
+    
+    return coordinates
+
     
 if __name__ == "__main__":
 
@@ -87,9 +106,9 @@ if __name__ == "__main__":
     cpu_ships = 0
 
     # CPU auto attempts (AI)
-    cpu_lasthits = []
     cpu_lastaims = []
-    # cpu_direction = 0
+    cpu_direction = 0
+    cpu_adjacent = False
 
     print("Sea Battle - Matheus Alexandre & Symon Bezerra")
     diff_valid = False
@@ -194,23 +213,26 @@ if __name__ == "__main__":
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
 
-                if len(cpu_lasthits) == 0:
+                if len(cpu_lastaims) == 0:
                     cpu_attempt = False
                 else:
-                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player, cpu_lasthits[len(cpu_lasthits) - 1])
+                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player, cpu_lastaims[len(cpu_lastaims) - 1])
                 if not cpu_attempt:
                     cpu_aim = cpu_randomshot()
+                    cpu_adjacent = False
                 else:
-                    cpu_smart_attempt = cpu_smartshot(grid_player, cpu_lasthits[len(cpu_lasthits) - 1], cpu_lastaims[len(cpu_lastaims) - 1])
+                    cpu_smart_attempt = cpu_smartshot(grid_player, cpu_lastaims[len(cpu_lastaims) - 1], cpu_adjacent, cpu_direction)
                     if not cpu_smart_attempt[0]:
                         cpu_aim = cpu_randomshot
                     else: cpu_aim = cpu_smart_attempt[1]
                 cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
 
+
                 if cpu_shot in ("R", "B", "D", "C"):
+                    if cpu_attempt:
+                        cpu_adjacent = True
                     ship_id = placementModule.get_ship_id_by_tag(cpu_shot)
-                    cpu_lasthits.append(cpu_aim)
-                    cpu_lastaims.append(cpu_shot)
+                    cpu_lastaims.append(cpu_aim)
                     player_ships -= 1
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "H"
                     boardModule.clear_console()
@@ -222,6 +244,7 @@ if __name__ == "__main__":
                 elif cpu_shot in (None, 0):
                     auto_attempts = 0
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "M"
+                    cpu_adjacent = False
                     boardModule.clear_console()
                     print(f"CPU has missed!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
