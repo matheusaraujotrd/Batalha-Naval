@@ -225,7 +225,7 @@ def create_collision_block(grid: list, axis_Y: int, axis_X: int):
     if axis_Y - 1 >= 0 and (grid[axis_Y - 1][axis_X] == None or grid[axis_Y - 1][axis_X] == 0):
         grid[axis_Y - 1][axis_X] = 0
 
-def check_destroyed_ships(grid: list):
+def check_destroyed_ships(grid: list) -> bool:
     for ship in ships_memory:
         ship_tags = []
         for cell in ship:
@@ -236,11 +236,7 @@ def check_destroyed_ships(grid: list):
             time.sleep(1)
             show_collision_blocks(grid, ship)
             remove_ship_from_memory(ships_memory, ships_memory.index(ship))
-            return False
-        elif ship_tags.count("H") > 0 and ship_tags.count("H") < len(ship):
-            return True
-        else:
-            return False
+            break
 
 def cpu_unfinished_business(grid: list) -> tuple:
 
