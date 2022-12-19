@@ -272,7 +272,7 @@ def cpu_unfinished_business(grid: list, last_hit: str) -> tuple:
 def show_collision_blocks(grid: list, ship: list, open: bool) -> None:
     for cell in range(len(ship)):
         if cell > 0:
-            if ship[cell[0] + 1] < len(grid) and grid[ship[cell][0] + 1][ship[cell][1]] == 0:
+            if ship[cell][0] + 1 < len(grid) and grid[ship[cell][0] + 1][ship[cell][1]] == 0:
                 grid[ship[cell][0] + 1][ship[cell][1]] = "M"
                 time.sleep(0.5)
                 clear_console()
@@ -280,7 +280,7 @@ def show_collision_blocks(grid: list, ship: list, open: bool) -> None:
                     print_board_open(grid, len(grid))
                 else:
                     print_board(grid, len(grid))
-            if ship[cell[0] + 1] < len(grid) and grid[ship[cell][0] - 1][ship[cell][1]] == 0:
+            if ship[cell][0] + 1 < len(grid) and grid[ship[cell][0] - 1][ship[cell][1]] == 0:
                 grid[ship[cell][0] - 1][ship[cell][1]] = "M"
                 time.sleep(0.5)
                 clear_console()
@@ -288,7 +288,7 @@ def show_collision_blocks(grid: list, ship: list, open: bool) -> None:
                     print_board_open(grid, len(grid))
                 else:
                     print_board(grid, len(grid))
-            if ship[cell[0] + 1] < len(grid) and grid[ship[cell][0]][ship[cell][1] + 1] == 0:
+            if ship[cell][0] + 1 < len(grid) and grid[ship[cell][0]][ship[cell][1] + 1] == 0:
                 grid[ship[cell][0]][ship[cell][1] + 1] = "M"
                 time.sleep(0.5)
                 clear_console()
@@ -296,7 +296,7 @@ def show_collision_blocks(grid: list, ship: list, open: bool) -> None:
                     print_board_open(grid, len(grid))
                 else:
                     print_board(grid, len(grid))
-            if ship[cell[0] + 1] < len(grid) and grid[ship[cell][0]][ship[cell][1] - 1] == 0:
+            if ship[cell][0] + 1 < len(grid) and grid[ship[cell][0]][ship[cell][1] - 1] == 0:
                 grid[ship[cell][0]][ship[cell][1] - 1] = "M"
                 time.sleep(0.5)
                 clear_console()
