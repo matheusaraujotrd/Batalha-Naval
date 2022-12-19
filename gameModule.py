@@ -1,6 +1,6 @@
 import boardModule
 import placementModule
-from random import randint, shuffle
+from random import randint
 from time import sleep
 
 # global variables
@@ -13,11 +13,11 @@ SHIPS = {"R": "Carrier", "B": "Battleship", "C": "Cruiser", "D": "Destroyer"}
 SHIP_SIZES = {"R": 5, "B": 4, "C": 3, "D": 2}
 # grid initializer
 def grid_start (grid: list, difficulty: str, player: bool):
-    
+
     # initializing grid
     boardModule.start_board(grid, grid_size)
     boardModule.print_board(grid, grid_size)       
-    
+
     if difficulty == "easy":
         placementModule.ship_placement(grid, "cruiser", player)
         placementModule.ship_placement(grid, "destroyer", player)
@@ -65,22 +65,9 @@ def cpu_randomshot () -> list:
 #         direction = randint(0,3)
 #         cpu_shot = placementModule.cpu_check_valid_direction(grid_player, direction, ship, lastshot)
 #         if cpu_shot: valid_shot = True
-    
+
 #     return direction
 
-def cpu_smartshot (lasthit: tuple, direction: int) -> tuple:
-    try:
-        if direction == 0:
-            return (lasthit[0] - 1, lasthit[1])
-        elif direction == 1:
-            return (lasthit[0] + 1, lasthit[1])
-        elif direction == 2:
-            return (lasthit[0], lasthit[1] - 1)
-        elif direction == 3:
-            return (lasthit[0], lasthit[1] + 1)
-    except IndexError:
-        return (None, None)
-    
 if __name__ == "__main__":
 
     # player & cpu lives
@@ -89,7 +76,6 @@ if __name__ == "__main__":
 
     # CPU auto attempts (AI)
     cpu_lasthits = []
-    smartshot_directions = []
     # cpu_direction = 0
 
     print("Sea Battle - Matheus Alexandre & Symon Bezerra")
@@ -118,10 +104,10 @@ if __name__ == "__main__":
         except ValueError:
             boardModule.clear_console()
             print("Enter a numeric value!\n")
-    
+
     # now to start the grids
     grid_start(grid_cpu, game_difficulty, True)
-    grid_start(grid_player, game_difficulty, True)
+    grid_start(grid_player, game_difficulty, False)
 
     boardModule.clear_console()
 
@@ -132,7 +118,7 @@ if __name__ == "__main__":
     # game loop check
     game_on = True
     while game_on:
-        
+
         if player_turn:
             player_winner = player_wins()
             if player_winner:
@@ -152,7 +138,7 @@ if __name__ == "__main__":
                     if player_ships == 0 or cpu_ships == 0: break
 
                     try:
-                        boardModule.print_board_open(grid_cpu, len(grid_cpu)) # debug
+                        boardModule.print_board(grid_cpu, len(grid_cpu)) # debug
                         sleep(1.5)
                         player_shot = input("\nAim your shot at the opponent! e.g.: B2\n").lower()
                         player_aim = grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)]
@@ -160,7 +146,7 @@ if __name__ == "__main__":
                             grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)] = "M"
                             boardModule.clear_console()
                             print("Miss!\n")
-                            boardModule.print_board_open(grid_cpu, len(grid_cpu))
+                            boardModule.print_board(grid_cpu, len(grid_cpu))
                             sleep(1.5)
                             player_turn, cpu_turn = False, True
                             player_shooting = False
@@ -170,14 +156,14 @@ if __name__ == "__main__":
                             print(f"You've hit the CPU's {ship_id}")
                             cpu_ships -= 1
                             grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)] = "H"
-                            placementModule.check_destroyed_ships(grid_cpu)
+                            placementModule.check_destroyed_ships(grid_cpu, False)
                         elif player_aim in ("M", "H"):
                             boardModule.clear_console()
                             print("You've already shot here! Choose another coordinate!\n")
                     except (KeyError, IndexError):
                         boardModule.clear_console()
                         print("Enter a valid coordinate!\n")
-        
+
         if cpu_turn:
             cpu_winner = cpu_wins()
             if cpu_winner:
@@ -194,44 +180,43 @@ if __name__ == "__main__":
                 print("CPU is going to make a shot...\n")
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
-
+                # random coord
+                # if auto_attempts == 0:
+                #     cpu_attempt = cpu_autoshot()
+                #     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
+                # else:
+                #     auto_attempts -= 1
+                #     if cpu_direction == 0 and cpu_attempt[0] - 1 >= 0:
+                #         cpu_attempt = [cpu_attempt[0] - 1, cpu_attempt[1]]
+                #     elif cpu_direction == 1 and cpu_attempt[0] + 1 < len(grid_player):
+                #         cpu_attempt = [cpu_attempt[0] + 1, cpu_attempt[1]]
+                #     elif cpu_direction == 2 and cpu_attempt[1] - 1 >= 0:
+                #         cpu_attempt = [cpu_attempt[0], cpu_attempt[1] - 1]
+                #     elif cpu_direction == 3 and cpu_attempt[1] + 1 < len(grid_player): 
+                #             cpu_attempt = [cpu_attempt[0], cpu_attempt[1] + 1]
+                #     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
                 if len(cpu_lasthits) == 0:
-                    cpu_attempt = False
+                    cpu_attempt = None
                 else:
-                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player)
-                if not cpu_attempt:
+                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player, cpu_lasthits[len(cpu_lasthits) - 1])
+                if cpu_attempt == None:
                     cpu_aim = cpu_randomshot()
                 else:
-                    valid_shot = False
-                    while not valid_shot:
-                        cpu_aim = cpu_smartshot(cpu_lasthits[len(cpu_lasthits) - 1], smartshot_directions[len(smartshot_directions) - 1])
-                        if cpu_aim != (None, None):
-                            valid_shot = True
-                        else:
-                            smartshot_directions.pop()
-                try:
-                    cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
-                except IndexError:
-                    cpu_attempt = False
-                    cpu_aim = cpu_randomshot()
+                    cpu_aim = cpu_attempt
+                cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
 
                 if cpu_shot in ("R", "B", "D", "C"):
-                    if not cpu_attempt:
-                        smartshot_directions = [0,1,2,3]
-                        shuffle(smartshot_directions)
                     ship_id = placementModule.get_ship_id_by_tag(cpu_shot)
-                    cpu_lasthits.append(cpu_aim)
+                    cpu_lasthits.append(cpu_shot)
                     player_ships -= 1
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "H"
                     boardModule.clear_console()
                     print(f"CPU has hit your {ship_id}!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
+                    placementModule.check_destroyed_ships(grid_player, True)
                     sleep(1.5)
                 elif cpu_shot in ("M", "H"):
-                    if len(smartshot_directions) > 0:
-                        smartshot_directions.pop()
-                    elif len(smartshot_directions) == 0:
-                        cpu_attempt == False
+                    pass # no need, since the smart shots will already cover to not hit M's or H's
                 elif cpu_shot in (None, 0):
                     auto_attempts = 0
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "M"
