@@ -1,6 +1,6 @@
 import boardModule
 import placementModule
-from random import randint
+from random import randint, shuffle
 from time import sleep
 
 # global variables
@@ -67,6 +67,19 @@ def cpu_randomshot () -> list:
 #         if cpu_shot: valid_shot = True
     
 #     return direction
+
+def cpu_smartshot (lasthit: tuple, direction: int) -> tuple:
+    try:
+        if direction == 0:
+            return (lasthit[0] - 1, lasthit[1])
+        elif direction == 1:
+            return (lasthit[0] + 1, lasthit[1])
+        elif direction == 2:
+            return (lasthit[0], lasthit[1] - 1)
+        elif direction == 3:
+            return (lasthit[0], lasthit[1] + 1)
+    except IndexError:
+        return (None, None)
     
 if __name__ == "__main__":
 
@@ -76,6 +89,7 @@ if __name__ == "__main__":
 
     # CPU auto attempts (AI)
     cpu_lasthits = []
+    smartshot_directions = []
     # cpu_direction = 0
 
     print("Sea Battle - Matheus Alexandre & Symon Bezerra")
@@ -180,34 +194,33 @@ if __name__ == "__main__":
                 print("CPU is going to make a shot...\n")
                 boardModule.print_board_open(grid_player, len(grid_player))
                 sleep(1.5)
-                # random coord
-                # if auto_attempts == 0:
-                #     cpu_attempt = cpu_autoshot()
-                #     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
-                # else:
-                #     auto_attempts -= 1
-                #     if cpu_direction == 0 and cpu_attempt[0] - 1 >= 0:
-                #         cpu_attempt = [cpu_attempt[0] - 1, cpu_attempt[1]]
-                #     elif cpu_direction == 1 and cpu_attempt[0] + 1 < len(grid_player):
-                #         cpu_attempt = [cpu_attempt[0] + 1, cpu_attempt[1]]
-                #     elif cpu_direction == 2 and cpu_attempt[1] - 1 >= 0:
-                #         cpu_attempt = [cpu_attempt[0], cpu_attempt[1] - 1]
-                #     elif cpu_direction == 3 and cpu_attempt[1] + 1 < len(grid_player): 
-                #             cpu_attempt = [cpu_attempt[0], cpu_attempt[1] + 1]
-                #     cpu_aim = grid_player[cpu_attempt[0]][cpu_attempt[1]]
+
                 if len(cpu_lasthits) == 0:
-                    cpu_attempt = None
+                    cpu_attempt = False
                 else:
-                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player, cpu_lasthits[len(cpu_lasthits) - 1])
-                if cpu_attempt == None:
+                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player)
+                if not cpu_attempt:
                     cpu_aim = cpu_randomshot()
                 else:
-                    cpu_aim = cpu_attempt
-                cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
+                    valid_shot = False
+                    while not valid_shot:
+                        cpu_aim = cpu_smartshot(cpu_lasthits[len(cpu_lasthits) - 1], smartshot_directions[len(smartshot_directions) - 1])
+                        if cpu_aim != (None, None):
+                            valid_shot = True
+                        else:
+                            smartshot_directions.pop()
+                try:
+                    cpu_shot = grid_player[cpu_aim[0]][cpu_aim[1]]
+                except IndexError:
+                    cpu_attempt = False
+                    cpu_aim = cpu_randomshot()
 
                 if cpu_shot in ("R", "B", "D", "C"):
+                    if not cpu_attempt:
+                        smartshot_directions = [0,1,2,3]
+                        shuffle(smartshot_directions)
                     ship_id = placementModule.get_ship_id_by_tag(cpu_shot)
-                    cpu_lasthits.append(cpu_shot)
+                    cpu_lasthits.append(cpu_aim)
                     player_ships -= 1
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "H"
                     boardModule.clear_console()
@@ -215,7 +228,10 @@ if __name__ == "__main__":
                     boardModule.print_board_open(grid_player, len(grid_player))
                     sleep(1.5)
                 elif cpu_shot in ("M", "H"):
-                    pass # no need, since the smart shots will already cover to not hit M's or H's
+                    if len(smartshot_directions) > 0:
+                        smartshot_directions.pop()
+                    elif len(smartshot_directions) == 0:
+                        cpu_attempt == False
                 elif cpu_shot in (None, 0):
                     auto_attempts = 0
                     grid_player[cpu_aim[0]][cpu_aim[1]] = "M"

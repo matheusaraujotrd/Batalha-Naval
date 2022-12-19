@@ -1,5 +1,5 @@
 import time
-from random import randint
+from random import randint, shuffle
 from boardModule import print_board, print_board_open
 from boardModule import clear_console
 
@@ -225,14 +225,13 @@ def create_collision_block(grid: list, axis_Y: int, axis_X: int):
     if axis_Y - 1 >= 0 and (grid[axis_Y - 1][axis_X] == None or grid[axis_Y - 1][axis_X] == 0):
         grid[axis_Y - 1][axis_X] = 0
 
-def check_destroyed_ships(grid: list, aim: list):
+def check_destroyed_ships(grid: list):
     for ship in ships_memory:
         ship_tags = []
         for cell in ship:
             ship_tags.append(grid[cell[0]][cell[1]])
         if ship_tags.count("H") == len(ship):
             clear_console()
-            print(f"You've destroyed a {get_ship_id_by_tag(aim)}")
             print_board_open(grid, len(grid))
             time.sleep(1)
             show_collision_blocks(grid, ship)
@@ -243,7 +242,7 @@ def check_destroyed_ships(grid: list, aim: list):
         else:
             return False
 
-def cpu_unfinished_business(grid: list, last_hit: str) -> tuple:
+def cpu_unfinished_business(grid: list) -> tuple:
 
     for ship in ships_memory:
         ship_tags = []
@@ -252,11 +251,13 @@ def cpu_unfinished_business(grid: list, last_hit: str) -> tuple:
             ship_tags.append(grid[cell[0]][cell[1]])
             ship_coordinates.append(cell)
         if ship_tags.count("H") != len(ship) and ship_tags.count("H") > 0:
-            return ship_coordinates[ship_tags.index(last_hit)]
+            # return ship_coordinates[ship_tags.index(last_hit)]
+            return True
         elif ship_tags.count("H") == len(ship):
-            return None
+            # return None
+            return False
     
-    return None
+    return False
 
 
 def show_collision_blocks(grid: list, ship: list) -> None:
