@@ -243,7 +243,7 @@ def check_destroyed_ships(grid: list, aim: list):
         else:
             return False
 
-def cpu_unfinished_business(grid: list, last_hit: str) -> bool:
+def cpu_unfinished_business(grid: list, last_hit: str) -> tuple:
 
     for ship in ships_memory:
         ship_tags = []
@@ -252,13 +252,11 @@ def cpu_unfinished_business(grid: list, last_hit: str) -> bool:
             ship_tags.append(grid[cell[0]][cell[1]])
             ship_coordinates.append(cell)
         if ship_tags.count("H") != len(ship) and ship_tags.count("H") > 0:
-            # return ship_coordinates[ship_tags.index(last_hit)]
-            return True
+            return ship_coordinates[ship_tags.index(last_hit)]
         elif ship_tags.count("H") == len(ship):
-            # return None
-            return False
+            return None
     
-    return False
+    return None
 
 
 def show_collision_blocks(grid: list, ship: list) -> None:
