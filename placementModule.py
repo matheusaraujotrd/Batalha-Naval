@@ -147,86 +147,71 @@ def do_manual_input(grid: list, ship: str) -> list:
 def check_valid_placement_direction(grid: list, direction: int, ship: str, ship_start: list) -> list:
     ship_position = []
     ships_temporary_coordinates = []
-    # ships_temporary_coordinates.append(ship)
     if direction == 0:
         if ship_start[0] - (get_ship_size(ship) - 1) >= 0:
             for x in range(get_ship_size(ship)):
                 ship_position.append(grid[ship_start[0] - x][ship_start[1]])
                 ships_temporary_coordinates.append((ship_start[0] - x, ship_start[1]))
-            if ship_position.count(None) == (get_ship_size(ship)) and ship_position.count(0) == 0:
+            if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
+
     elif direction == 1:
         if ship_start[0] + (get_ship_size(ship)) <= len(grid):
             for x in range(get_ship_size(ship)):
                 ship_position.append(grid[ship_start[0] + x][ship_start[1]])
                 ships_temporary_coordinates.append((ship_start[0] + x, ship_start[1]))
-            if ship_position.count(None) == (get_ship_size(ship)) and ship_position.count(0) == 0:
+            if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
+
     elif direction == 2:
         if ship_start[1] - (get_ship_size(ship) - 1) >= 0:
             for x in range(get_ship_size(ship)):
                 ship_position.append(grid[ship_start[0]][ship_start[1] - x])
                 ships_temporary_coordinates.append((ship_start[0], ship_start[1] - x))
-            if ship_position.count(None) == (get_ship_size(ship)) and ship_position.count(0) == 0:
+            if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
+
     elif direction == 3:
         if ship_start[1] + (get_ship_size(ship)) <= len(grid):
             for x in range(get_ship_size(ship)):
                 ship_position.append(grid[ship_start[0]][ship_start[1] + x])
                 ships_temporary_coordinates.append((ship_start[0], ship_start[1] + x))
-            if ship_position.count(None) == (get_ship_size(ship)) and ship_position.count(0) == 0:
+            if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
     return [direction, False]
-
-    # Same as above function, but should be used for CPU purposes (so it doesn't get impossible to beat)
-def cpu_check_valid_direction(grid: list, ship_tag: str, ship_start: list) -> list:
-    ship_directions = []
-    for x in range(4):
-        current_direction = []
-        for y in range(get_ship_size(ship_tag)):
-            if x == 0:
-                current_direction.append(grid[ship_start[0] - 1][ship_start[1]])
-            elif x == 1:
-                current_direction.append(grid[ship_start[0] + 1][ship_start[1]])
-            elif x == 2:
-                current_direction.append(grid[ship_start[0]][ship_start[1] - 1])
-            elif x == 3:
-                current_direction.append(grid[ship_start[0]][ship_start[1] + 1])
-        ship_directions.append(current_direction)
-    for x in range(len(ship_directions)):
-        if ship_directions[x].count("H") >= 1:
-            if x == 0 or x == 2:
-                if ship_directions[x].index("H") > ship_directions[x].index("M"):
-                    return [x, True]
-            else:
-                if ship_directions[x].index("H") < ship_directions[x].index("M"):
-                    return [x, True]
-    return [x, False]
 
 
 
 # This function deploy units after confirming there are enough empty slots
 def deploy_ship(grid: list, ship: str, ship_start: list, move_direction: int):
     if move_direction == 0:
+
         for i in range(get_ship_size(ship)):
             grid[ship_start[0] - i][ship_start[1]] = get_ship_tag_by_id(ship)
             create_collision_block(grid, ship_start[0] - i, ship_start[1])
+
     elif move_direction == 1:
+
         for i in range(get_ship_size(ship)):
             grid[ship_start[0] + i][ship_start[1]] = get_ship_tag_by_id(ship)
             create_collision_block(grid, ship_start[0] + i, ship_start[1])
+
     elif move_direction == 2:
         for i in range(get_ship_size(ship)):
+
             grid[ship_start[0]][ship_start[1] - i] = get_ship_tag_by_id(ship)
             create_collision_block(grid, ship_start[0], ship_start[1] - i)
+
     elif move_direction == 3:
+
         for i in range(get_ship_size(ship)):
             grid[ship_start[0]][ship_start[1] + i] = get_ship_tag_by_id(ship)
             create_collision_block(grid, ship_start[0], ship_start[1] + i)
+
     create_collision_block(grid, ship_start[0], ship_start[1])
 
 # This function will create a collision block around each ship block when possible
@@ -240,19 +225,23 @@ def create_collision_block(grid: list, axis_Y: int, axis_X: int):
     if axis_Y - 1 >= 0 and (grid[axis_Y - 1][axis_X] == None or grid[axis_Y - 1][axis_X] == 0):
         grid[axis_Y - 1][axis_X] = 0
 
-def check_destroyed_ships(grid: list):
-    for ship in range(len(ships_memory) - 1):
-        acm = 0
-        for cells in range(1, len(ships_memory[ship])):
-            if grid[ships_memory[ship][cells][0]][ships_memory[ship][cells][1]] == "H":
-                acm += 1
-        if acm == len(ships_memory[ship]) -1:
+def check_destroyed_ships(grid: list, aim: list):
+    for ship in ships_memory:
+        ship_tags = []
+        for cell in ship:
+            ship_tags.append(grid[cell[0]][cell[1]])
+        if ship_tags.count("H") == len(ship):
             clear_console()
-            print(f"You've destroyed a {ships_memory[ship][0]}")
+            print(f"You've destroyed a {get_ship_id_by_tag(aim)}")
             print_board_open(grid, len(grid))
             time.sleep(1)
-            show_collision_blocks(grid, ships_memory, ship)
-            remove_ship_from_memory(ships_memory, ship)
+            show_collision_blocks(grid, ship)
+            remove_ship_from_memory(ships_memory, ships_memory.index(ship))
+            return False
+        elif ship_tags.count("H") > 0 and ship_tags.count("H") < len(ship):
+            return True
+        else:
+            return False
 
 def cpu_unfinished_business(grid: list, last_hit: str) -> bool:
 
@@ -272,25 +261,25 @@ def cpu_unfinished_business(grid: list, last_hit: str) -> bool:
     return False
 
 
-def show_collision_blocks(grid: list, ships_memory: list, number_index: int) -> None:
-    for pos in range(1, len(ships_memory[number_index])):
-        if ships_memory[number_index][pos][0] + 1 < len(grid) and grid[ships_memory[number_index][pos][0] + 1][ships_memory[number_index][pos][1]] == 0:
-            grid[ships_memory[number_index][pos][0] + 1][ships_memory[number_index][pos][1]] = "M"
+def show_collision_blocks(grid: list, ship: list) -> None:
+    for cell in ship:
+        if cell[0] + 1 < len(grid) and grid[cell[0] + 1][cell[1]] == 0:
+            grid[cell[0] + 1][cell[1]] = "M"
             time.sleep(0.5)
             clear_console()
             print_board_open(grid, len(grid))
-        if ships_memory[number_index][pos][1] + 1 < len(grid) and grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] + 1] == 0:
-            grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] + 1] = "M"
+        if cell[0] - 1 >= 0 and grid[cell[0] - 1][cell[1]] == 0:
+            grid[cell[0] - 1][cell[1]] = "M"
             time.sleep(0.5)
             clear_console()
             print_board_open(grid, len(grid))
-        if ships_memory[number_index][pos][1] - 1 >= 0 and grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] - 1] == 0:
-            grid[ships_memory[number_index][pos][0]][ships_memory[number_index][pos][1] - 1] = "M"
+        if cell[1] + 1 < len(grid) and grid[cell[0]][cell[1] + 1] == 0:
+            grid[cell[0]][cell[1] + 1] = "M"
             time.sleep(0.5)
             clear_console()
             print_board_open(grid, len(grid))
-        if ships_memory[number_index][pos][0] - 1 >= 0 and grid[ships_memory[number_index][pos][0] - 1][ships_memory[number_index][pos][1]] == 0:
-            grid[ships_memory[number_index][pos][0] - 1][ships_memory[number_index][pos][1]] = "M"
+        if cell[1] - 1 >= 0 and grid[cell[0]][cell[1] - 1] == 0:
+            grid[cell[0]][cell[1] - 1] = "M"
             time.sleep(0.5)
             clear_console()
             print_board_open(grid, len(grid))

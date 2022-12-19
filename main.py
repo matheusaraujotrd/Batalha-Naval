@@ -190,7 +190,7 @@ if __name__ == "__main__":
                             print(f"You've hit the CPU's {ship_id}")
                             cpu_ships -= 1
                             grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)] = "H"
-                            placementModule.check_destroyed_ships(grid_cpu)
+                            placementModule.check_destroyed_ships(grid_cpu, player_aim)
                         elif player_aim in ("M", "H"):
                             boardModule.clear_console()
                             print("You've already shot here! Choose another coordinate!\n")
@@ -218,7 +218,7 @@ if __name__ == "__main__":
                 if len(cpu_lastaims) == 0:
                     cpu_attempt = False
                 else:
-                    cpu_attempt = placementModule.cpu_unfinished_business(grid_player, cpu_lastaims[len(cpu_lastaims) - 1])
+                    cpu_attempt = placementModule.check_destroyed_ships(grid_player, cpu_lastaims[len(cpu_lastaims) - 1])
                 if not cpu_attempt:
                     cpu_aim = cpu_randomshot()
                     cpu_adjacent = False
