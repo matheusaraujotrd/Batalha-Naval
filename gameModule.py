@@ -107,6 +107,7 @@ if __name__ == "__main__":
 
     # now to start the grids
     grid_start(grid_cpu, game_difficulty, True)
+    boardModule.clear_console()
     grid_start(grid_player, game_difficulty, False)
 
     boardModule.clear_console()
@@ -138,6 +139,7 @@ if __name__ == "__main__":
                     if player_ships == 0 or cpu_ships == 0: break
 
                     try:
+                        boardModule.clear_console()
                         boardModule.print_board(grid_cpu, len(grid_cpu)) # debug
                         sleep(1.5)
                         player_shot = input("\nAim your shot at the opponent! e.g.: B2\n").lower()
@@ -152,10 +154,12 @@ if __name__ == "__main__":
                             player_shooting = False
                         elif player_aim in ("R", "B", "C", "D"):
                             ship_id = placementModule.get_ship_id_by_tag(player_aim)
-                            boardModule.clear_console()
-                            print(f"You've hit the CPU's {ship_id}")
                             cpu_ships -= 1
+                            boardModule.clear_console()
                             grid_cpu[placementModule.get_row_shot_coordinates(player_shot)][placementModule.get_column_shot_coordinates(player_shot)] = "H"
+                            print(f"You've hit the CPU's {ship_id}")
+                            boardModule.print_board(grid_cpu, len(grid_cpu))
+                            sleep(1.5)
                             placementModule.check_destroyed_ships(grid_cpu, False)
                         elif player_aim in ("M", "H"):
                             boardModule.clear_console()
@@ -213,8 +217,8 @@ if __name__ == "__main__":
                     boardModule.clear_console()
                     print(f"CPU has hit your {ship_id}!\n")
                     boardModule.print_board_open(grid_player, len(grid_player))
-                    placementModule.check_destroyed_ships(grid_player, True)
                     sleep(1.5)
+                    placementModule.check_destroyed_ships(grid_player, True)
                 elif cpu_shot in ("M", "H"):
                     pass # no need, since the smart shots will already cover to not hit M's or H's
                 elif cpu_shot in (None, 0):
