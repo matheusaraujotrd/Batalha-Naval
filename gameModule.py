@@ -38,3 +38,24 @@ def cpu_unfinished_business(grid: list, ships_memory: list, open: bool) -> tuple
                 placementModule.check_destroyed_ships(grid, open)
                 return None
     return None
+
+def game_finish(player_wins: bool, cpu_wins: bool):
+    if player_wins:
+        boardModule.clear_console()
+        print("You win, congratulations! You're the Sea Master!")
+        print("\n\nYour board:")
+        boardModule.print_board_open(grid_player, len(grid_cpu))
+        print("\n\nCPU's board:")
+        boardModule.print_board_open(grid_cpu, len(grid_cpu))
+    elif cpu_wins:
+        boardModule.clear_console()
+        print("CPU wins! Good luck next time.")
+        print("\n\nYour board:")
+        boardModule.print_board_open(grid_player, len(grid_cpu))
+        print("\n\nCPU's board:")
+        boardModule.print_board_open(grid_cpu, len(grid_cpu))
+    
+def player_shot(grid: list) -> tuple:
+    shot_coordinates = input("Aim your shot at your oponent! e.g. B2:/n")
+    print_board(grid, len(grid))
+    return (placementModule.get_row_shot_coordinates(shot_coordinates), placementModule.get_column_shot_coordinates(shot_coordinates))
