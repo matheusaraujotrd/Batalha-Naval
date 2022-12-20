@@ -147,42 +147,44 @@ def do_manual_input(grid: list, ship: str) -> list:
 def check_valid_placement_direction(grid: list, direction: int, ship: str, ship_start: list, auto: bool) -> list:
     ship_position = []
     ships_temporary_coordinates = []
+    axis_Y = ship_start[0]
+    axis_X = ship_start[1]
     if auto:
         ships_temporary_coordinates.append("cpu")
     else:
         ships_temporary_coordinates.append("player")
     if direction == 0:
-        if ship_start[0] - (get_ship_size(ship) - 1) >= 0:
+        if axis_Y - (get_ship_size(ship) - 1) >= 0:
             for x in range(get_ship_size(ship)):
-                ship_position.append(grid[ship_start[0] - x][ship_start[1]])
-                ships_temporary_coordinates.append((ship_start[0] - x, ship_start[1]))
+                ship_position.append(grid[axis_Y - x][axis_X])
+                ships_temporary_coordinates.append((axis_Y - x, axis_X))
             if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
 
     elif direction == 1:
-        if ship_start[0] + (get_ship_size(ship)) <= len(grid):
+        if axis_Y + (get_ship_size(ship)) <= len(grid):
             for x in range(get_ship_size(ship)):
-                ship_position.append(grid[ship_start[0] + x][ship_start[1]])
-                ships_temporary_coordinates.append((ship_start[0] + x, ship_start[1]))
+                ship_position.append(grid[axis_Y + x][axis_X])
+                ships_temporary_coordinates.append((axis_Y + x, axis_X))
             if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
 
     elif direction == 2:
-        if ship_start[1] - (get_ship_size(ship) - 1) >= 0:
+        if axis_X - (get_ship_size(ship) - 1) >= 0:
             for x in range(get_ship_size(ship)):
-                ship_position.append(grid[ship_start[0]][ship_start[1] - x])
-                ships_temporary_coordinates.append((ship_start[0], ship_start[1] - x))
+                ship_position.append(grid[axis_Y][axis_X - x])
+                ships_temporary_coordinates.append((axis_Y, axis_X - x))
             if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
 
     elif direction == 3:
-        if ship_start[1] + (get_ship_size(ship)) <= len(grid):
+        if axis_X + (get_ship_size(ship)) <= len(grid):
             for x in range(get_ship_size(ship)):
-                ship_position.append(grid[ship_start[0]][ship_start[1] + x])
-                ships_temporary_coordinates.append((ship_start[0], ship_start[1] + x))
+                ship_position.append(grid[axis_Y][axis_X + x])
+                ships_temporary_coordinates.append((axis_Y, axis_X + x))
             if ship_position.count(None) == (get_ship_size(ship)):
                 ships_memory.append(ships_temporary_coordinates)
                 return [direction, True]
@@ -192,31 +194,33 @@ def check_valid_placement_direction(grid: list, direction: int, ship: str, ship_
 
 # This function deploy units after confirming there are enough empty slots
 def deploy_ship(grid: list, ship: str, ship_start: list, move_direction: int):
+    axis_Y = ship_start[0]
+    axis_X = ship_start[1]
     if move_direction == 0:
 
         for i in range(get_ship_size(ship)):
-            grid[ship_start[0] - i][ship_start[1]] = get_ship_tag_by_id(ship)
-            create_collision_block(grid, ship_start[0] - i, ship_start[1])
+            grid[axis_Y - i][axis_X] = get_ship_tag_by_id(ship)
+            create_collision_block(grid, axis_Y - i, axis_X)
 
     elif move_direction == 1:
 
         for i in range(get_ship_size(ship)):
-            grid[ship_start[0] + i][ship_start[1]] = get_ship_tag_by_id(ship)
-            create_collision_block(grid, ship_start[0] + i, ship_start[1])
+            grid[axis_Y + i][axis_X] = get_ship_tag_by_id(ship)
+            create_collision_block(grid, axis_Y + i, axis_X)
 
     elif move_direction == 2:
         for i in range(get_ship_size(ship)):
 
-            grid[ship_start[0]][ship_start[1] - i] = get_ship_tag_by_id(ship)
-            create_collision_block(grid, ship_start[0], ship_start[1] - i)
+            grid[axis_Y][axis_X - i] = get_ship_tag_by_id(ship)
+            create_collision_block(grid, axis_Y, axis_X - i)
 
     elif move_direction == 3:
 
         for i in range(get_ship_size(ship)):
-            grid[ship_start[0]][ship_start[1] + i] = get_ship_tag_by_id(ship)
-            create_collision_block(grid, ship_start[0], ship_start[1] + i)
+            grid[axis_Y][axis_X + i] = get_ship_tag_by_id(ship)
+            create_collision_block(grid, axis_Y, axis_X + i)
 
-    create_collision_block(grid, ship_start[0], ship_start[1])
+    create_collision_block(grid, axis_Y, axis_X)
 
 # This function will create a collision block around each ship block when possible
 def create_collision_block(grid: list, axis_Y: int, axis_X: int):
@@ -247,26 +251,6 @@ def check_destroyed_ships(grid: list, open: bool) -> None:
             show_collision_blocks(grid, ship, open)
             remove_ship_from_memory(ships_memory, ships_memory.index(ship))
             break
-
-def cpu_unfinished_business(grid: list, last_hit: str) -> tuple:
-    for ship in ships_memory:
-        if 0 not in ship:
-            pass
-        else:
-            ship_tags = []
-            ship_coordinates = []
-            for cell in range(len(ship)):
-                if cell > 0:
-                    ship_tags.append(grid[ship[cell][0]][ship[cell][1]])
-                    ship_coordinates.append(ship[cell])
-            if ship_tags.count("H") < len(ship) - 1 and ship_tags.count("H") > 0:
-                return ship_coordinates[ship_tags.index(last_hit)]
-            elif ship_tags.count("H") == len(ship) - 1:
-                return None
-        
-        # return False
-    return None
-
 
 def show_collision_blocks(grid: list, ship: list, open: bool) -> None:
     for cell in range(len(ship)):
