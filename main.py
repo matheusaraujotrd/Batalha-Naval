@@ -10,8 +10,6 @@ grid_player = []
 grid_size = 0
 
 DIFFICULTY = {"easy": 5, "normal": 10, "hard": 15}
-SHIPS = {"R": "Carrier", "B": "Battleship", "C": "Cruiser", "D": "Destroyer"}
-SHIP_SIZES = {"R": 5, "B": 4, "C": 3, "D": 2}
 # grid initializer
 def grid_start (grid: list, difficulty: str, player: bool):
 
@@ -50,14 +48,14 @@ def grid_start (grid: list, difficulty: str, player: bool):
 def cpu_wins () -> bool:
     if player_ships == 0:
         game_on = False
-        gameModule.game_finish(False, True) 
+        gameModule.game_finish(False, True, grid_cpu, grid_player) 
         return True
     return False
 
 def player_wins () -> bool:
     if cpu_ships == 0: 
         game_on = False
-        gameModule.game_finish(True, False)
+        gameModule.game_finish(True, False, grid_cpu, grid_player)
         return True
     return False
 
@@ -100,20 +98,20 @@ if __name__ == "__main__":
     grid_start(grid_player, game_difficulty, False)
     boardModule.clear_console()
 
-    # Adding ships coordinates to main memory
-    ships_memory = placementModule.ships_memory
-
     # game loop check
     game_on = True
+    end_turn = False
+    player_ships_destroyed = 0
+    cpu_ships_destroyed = 0
     while game_on:
+        player_ships = player_ships - player_ships_destroyed
         if cpu_wins() or player_wins() == True:
             break
         else:
-            player_shot_coordinates = gameModule.playerShot(grid_cpu)
-            player_aim = grid_cpu[player_shot_coordinates[0]][player_shot_coordinates[1]]
-            if player_aim in SHIPS:
-                ship_id = placementModule.get_ship_id_by_tag(player_aim)
-                cpu_ships -= 1
-                print(f"You've hit CPU's {ship_id}")
-            placementModule.check_destroyed_ships(grid_cpu, False)
-            time.sleep(1)
+            end_turn, cpu_ships_destroyed = gameModule.player_turn(grid_cpu)
+            cpu_ships = cpu_ships - cpu_ships_destroyed
+            if cpu_wins() or player_wins() == True:
+                    break
+            while end_turn:
+                    end_turn, player_ships_destroyed = gameModule.cpu_turn(grid_player, end_turn)
+                    player_ships = player_ships - player_ships_destroyed

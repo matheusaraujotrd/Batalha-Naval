@@ -115,7 +115,7 @@ def get_column_shot_coordinates(player_input: str) -> int:
         if len(player_input) > 1 and len(player_input) < 4:
             coordinate = player_input[0].lower()
             return ord(coordinate) - ord("a")
-    except ValueError:
+    except (ValueError, IndexError):
         return ord("z")
 
 def get_row_shot_coordinates(player_input: str) -> int:
@@ -124,7 +124,7 @@ def get_row_shot_coordinates(player_input: str) -> int:
             return int(player_input[1])
         elif len(player_input) >= 3:
             return (int(player_input[1]) * 10) + int(player_input[2])
-    except ValueError:
+    except (ValueError, IndexError):
         return 16
 
 # A specific function to receive player input during placement
