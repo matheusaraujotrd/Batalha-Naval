@@ -79,21 +79,18 @@ def smart_shot(grid: list, cpu_shot_coordinates: tuple):
     axis_Y = cpu_shot_coordinates[0]
     axis_X = cpu_shot_coordinates[1]
     if axis_Y + 1 < len(grid):
-        cpu_last_hit_memory.append((axis_Y + 1, axis_X))
-        direction = 1
+        cpu_last_hit_memory.append(((axis_Y + 1, axis_X), 1))
     if axis_Y - 1 >= 0:
-        cpu_last_hit_memory.append((axis_Y - 1, axis_X))
-        direction = 0
+        cpu_last_hit_memory.append(((axis_Y - 1, axis_X), 0))
     if axis_X + 1 < len(grid):
-        cpu_last_hit_memory.append((axis_Y, axis_X + 1))
-        direction = 3
+        cpu_last_hit_memory.append(((axis_Y, axis_X + 1), 3))
     if axis_X - 1 >= 0:
-        cpu_last_hit_memory.append((axis_Y, axis_X - 1))
-        direction = 2
+        cpu_last_hit_memory.append(((axis_Y, axis_X - 1), 2))
     shuffle(cpu_last_hit_memory)
     for cell in range(len(cpu_last_hit_memory)):
-            axis_Y = cpu_last_hit_memory[cell][0]
-            axis_X = cpu_last_hit_memory[cell][1]
+            axis_Y = cpu_last_hit_memory[cell][0][0]
+            axis_X = cpu_last_hit_memory[cell][0][1]
+            direction = cpu_last_hit_memory[cell][1]
             if grid[axis_Y][axis_X] not in ["H", "M"]:
                 return [(axis_Y, axis_X), direction]
             else:
